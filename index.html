@@ -53,6 +53,32 @@
             filter: contrast(1.1) brightness(1.1); 
         }
 
+        /* === ROTATE MESSAGE (MOBILE) === */
+        #rotate-message {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #000;
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #00f3ff;
+            flex-direction: column;
+        }
+        
+        #rotate-message h1 {
+            font-size: 24px;
+            padding: 20px;
+            border: 2px solid #00f3ff;
+            animation: pulse 1s infinite;
+        }
+
+        @media screen and (orientation: portrait) {
+            #rotate-message { display: flex; }
+        }
+
         /* === UI LAYER === */
         #ui-layer {
             position: absolute;
@@ -372,6 +398,11 @@
 </head>
 <body class="in-menu">
 
+    <!-- ROTATE MESSAGE -->
+    <div id="rotate-message">
+        <h1>ПОЖАЛУЙСТА, ПОВЕРНИТЕ УСТРОЙСТВО ↻</h1>
+    </div>
+
     <div id="ui-layer">
         <div class="hud-top">
             <div class="stat-group">
@@ -514,6 +545,9 @@
     <canvas id="gameCanvas"></canvas>
 
     <script>
+        /** === MOBILE CHECK === */
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
         /** === LOCALIZATION === */
         let currentLang = localStorage.getItem('cyberpunk_td_lang') || 'ru';
         
@@ -1456,7 +1490,16 @@
             }
 
             resize(width, height) {
-                this.screenWaypoints = this.waypoints.map(p => ({ x: p.x * width, y: p.y * height }));
+                // ADDED PADDING TO PREVENT UI OVERLAP
+                const paddingX = isMobile ? 60 : 40;
+                const paddingY = isMobile ? 80 : 60; 
+                const safeW = width - paddingX * 2;
+                const safeH = height - paddingY * 2;
+
+                this.screenWaypoints = this.waypoints.map(p => ({ 
+                    x: p.x * safeW + paddingX, 
+                    y: p.y * safeH + paddingY 
+                }));
             }
 
             isCellBlocked(cellX, cellY, cellSize) {
@@ -1879,8 +1922,13 @@
                 const ctx = this.ctx;
                 ctx.save();
                 
-                ctx.shadowBlur = 20; 
-                ctx.shadowColor = CONFIG.colors.path;
+                if (!isMobile) {
+                    ctx.shadowBlur = 20; 
+                    ctx.shadowColor = CONFIG.colors.path;
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+
                 ctx.lineWidth = map.pathWidth + 4; 
                 ctx.strokeStyle = CONFIG.colors.path;
                 ctx.lineCap = 'round'; 
@@ -1912,8 +1960,12 @@
                 ctx.translate(e.x, e.y);
                 
                 if (e.isFrozen) {
-                    ctx.shadowBlur = 15;
-                    ctx.shadowColor = '#00ffff';
+                    if (!isMobile) {
+                        ctx.shadowBlur = 15;
+                        ctx.shadowColor = '#00ffff';
+                    } else {
+                        ctx.shadowBlur = 0;
+                    }
                     ctx.strokeStyle = '#00ffff';
                     ctx.lineWidth = 1;
                     ctx.beginPath();
@@ -1922,8 +1974,12 @@
                     ctx.fillStyle = '#00ffff';
                 } else {
                     if (e.isPhased) ctx.globalAlpha = 0.3;
-                    ctx.shadowBlur = 10; 
-                    ctx.shadowColor = e.color;
+                    if (!isMobile) {
+                        ctx.shadowBlur = 10; 
+                        ctx.shadowColor = e.color;
+                    } else {
+                        ctx.shadowBlur = 0;
+                    }
                     ctx.fillStyle = e.color;
                 }
 
@@ -2049,8 +2105,13 @@
                 ctx.lineWidth = 1;
                 ctx.stroke();
 
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = tower.config.color;
+                if (!isMobile) {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = tower.config.color;
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+                
                 ctx.fillStyle = tower.config.color;
                 ctx.strokeStyle = tower.config.color;
 
@@ -2120,15 +2181,25 @@
             drawProjectile(p) {
                 const ctx = this.ctx;
                 ctx.save();
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = p.color;
+                
+                if (!isMobile) {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = p.color;
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+
                 ctx.fillStyle = p.color;
                 ctx.strokeStyle = p.color;
 
                 if (p.type === 'bullet') {
                     ctx.translate(p.x, p.y);
                     if (p.effect === 'freeze') {
-                         ctx.shadowBlur = 15;
+                         if (!isMobile) {
+                             ctx.shadowBlur = 15;
+                         } else {
+                             ctx.shadowBlur = 0;
+                         }
                          ctx.rotate(Math.atan2(p.target.y - p.y, p.target.x - p.x));
                          ctx.beginPath();
                          ctx.moveTo(6, 0);
@@ -2136,7 +2207,11 @@
                          ctx.lineTo(-4, -3);
                          ctx.fill();
                     } else {
-                        ctx.shadowBlur = 20; 
+                        if (!isMobile) {
+                            ctx.shadowBlur = 20; 
+                        } else {
+                            ctx.shadowBlur = 0;
+                        }
                         ctx.rotate(Math.atan2(p.target.y - p.y, p.target.x - p.x));
                         ctx.beginPath(); ctx.arc(0, 0, 2.5, 0, Math.PI * 2); ctx.fill();
                         ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fillRect(-10, -1, 10, 2);
@@ -2184,8 +2259,12 @@
                 particles.forEach(p => {
                     ctx.globalAlpha = p.life;
                     ctx.fillStyle = p.color;
-                    ctx.shadowBlur = 10; 
-                    ctx.shadowColor = p.color;
+                    if (!isMobile) {
+                        ctx.shadowBlur = 10; 
+                        ctx.shadowColor = p.color;
+                    } else {
+                        ctx.shadowBlur = 0;
+                    }
                     ctx.fillRect(p.x, p.y, p.size, p.size);
                 });
                 ctx.restore();
@@ -2562,8 +2641,16 @@
 
             updateMouse(e) {
                 const rect = this.canvas.getBoundingClientRect();
-                this.mouse.x = e.clientX - rect.left;
-                this.mouse.y = e.clientY - rect.top;
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                
+                if (clientX !== undefined && clientY !== undefined) {
+                    const scaleX = this.canvas.width / rect.width;
+                    const scaleY = this.canvas.height / rect.height;
+                    
+                    this.mouse.x = (clientX - rect.left) * scaleX;
+                    this.mouse.y = (clientY - rect.top) * scaleY;
+                }
             }
 
             addShake(amount) { this.shake = amount; }
