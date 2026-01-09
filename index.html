@@ -392,6 +392,49 @@
         .glitch-text {
             animation: glitch 0.3s ease-in-out infinite;
         }
+
+        /* === ИСПРАВЛЕНИЕ ДЛЯ МОБИЛЬНЫХ (ВСТАВИТЬ В КОНЕЦ STYLE) === */
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            /* 1. Уменьшаем верхнюю панель */
+            .hud-top { height: 12vh; padding: 0 1vw; }
+            .stat-value { font-size: 14px; }
+            .stat-label { font-size: 8px; }
+
+            /* 2. Уменьшаем правые кнопки (меню, звук) */
+            .hud-controls {
+                top: 15vh; /* Чуть ниже */
+                right: 5px;
+                gap: 5px;
+            }
+            .control-btn {
+                width: 35px; /* Фиксированный размер вместо vh */
+                height: 35px;
+                min-width: 30px;
+                min-height: 30px;
+                font-size: 14px;
+            }
+
+            /* 3. Уменьшаем нижнее меню башен */
+            .menu-panel {
+                padding: 2px 5px;
+                bottom: 5px;
+            }
+            .build-btn {
+                width: 45px; /* Делаем кнопки компактнее */
+                height: 45px;
+                min-width: 40px; 
+                min-height: 40px;
+            }
+            .btn-icon { font-size: 18px; margin-bottom: 0; }
+            .btn-name { font-size: 8px; display: none; /* Скрываем названия на телефоне, чтобы влезло */ }
+            .btn-cost { font-size: 9px; margin-top: 0; }
+            
+            /* Кнопка рекламы (фикс эмодзи) */
+            .reward-icon { font-size: 18px; text-shadow: none; /* Убираем тень, чтобы не двоилось */ }
+            
+            /* Поднимаем уведомления, чтобы не закрывали центр */
+            #center-notification { font-size: 6vh; top: 30%; }
+        }
     </style>
 </head>
 <body class="in-menu">
