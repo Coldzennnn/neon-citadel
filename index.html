@@ -48,7 +48,7 @@
             filter: contrast(1.1) brightness(1.1); 
         }
 
-        /* === ROTATE MESSAGE (MOBILE PORTRAIT ONLY) === */
+        /* === ROTATE MESSAGE (SHOW IN LANDSCAPE ON MOBILE) === */
         #rotate-message {
             display: none;
             position: fixed;
@@ -70,10 +70,10 @@
             animation: pulse 1s infinite;
         }
 
-        /* Показываем сообщение только если телефон держится вертикально */
-        @media screen and (orientation: portrait) {
+        /* Показываем сообщение, если телефон в горизонтальном режиме (игра теперь вертикальная) */
+        @media screen and (orientation: landscape) and (max-height: 600px) {
             #rotate-message { display: flex; }
-            #ui-layer { display: none; } /* Скрываем интерфейс в вертикальном режиме */
+            #ui-layer { display: none; }
         }
 
         /* === UI LAYER === */
@@ -91,142 +91,142 @@
         
         body.in-menu #ui-layer { opacity: 0; pointer-events: none; }
 
-        /* === HUD TOP === */
+        /* === HUD TOP (COMPACT) === */
         .hud-top {
-            height: 8vh;
-            min-height: 40px;
+            height: 60px;
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 5, 10, 0.85);
-            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
-            padding: 0 2vw;
-            backdrop-filter: blur(4px);
+            background: linear-gradient(180deg, rgba(0, 10, 20, 0.95), rgba(0,0,0,0));
+            padding: 10px 15px;
             z-index: 10;
             pointer-events: auto;
         }
 
         .stat-group {
             display: flex;
-            gap: 2vw;
-            width: 100%;
-            justify-content: center;
+            gap: 15px;
+            width: auto;
         }
 
         .stat-box {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            min-width: 50px;
+            align-items: flex-start;
         }
 
         .stat-label {
-            font-size: 1.2vh;
+            font-size: 10px;
             color: #00f3ff;
-            opacity: 0.7;
+            opacity: 0.8;
             text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 2px;
         }
 
         .stat-value {
-            font-size: 2.5vh;
+            font-size: 18px;
             font-weight: bold;
             color: #fff;
             text-shadow: 0 0 5px #00f3ff;
+            line-height: 1;
         }
         
         #level-value { color: #ff00ff; text-shadow: 0 0 5px #ff00ff; }
         #hp-display.critical { color: #ff0055; text-shadow: 0 0 10px #ff0055; animation: blink 0.5s infinite; }
         #money-display { color: #ffd700; text-shadow: 0 0 5px #ffd700; }
 
-        /* === HUD CONTROLS === */
+        /* === HUD CONTROLS (TOP RIGHT) === */
         .hud-controls {
-            position: absolute;
-            top: 10vh;
-            right: 10px;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            flex-direction: row;
+            gap: 8px;
             pointer-events: auto;
-            z-index: 20;
         }
 
         .control-btn {
-            width: 6vh;
-            height: 6vh;
-            min-width: 32px;
-            min-height: 32px;
-            background: rgba(0, 10, 20, 0.8);
+            width: 36px;
+            height: 36px;
+            background: rgba(0, 20, 40, 0.6);
             border: 1px solid #00f3ff;
             border-radius: 50%;
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2vh;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             backdrop-filter: blur(4px);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
         }
 
-        /* === TOOLBARS === */
+        .control-btn:active { transform: scale(0.9); background: #00f3ff; color: #000; }
+
+        /* === TOOLBARS (BOTTOM) === */
         .toolbar-container {
-            display: flex;
-            justify-content: center;
-            padding-bottom: 2vh;
+            width: 100%;
+            padding-bottom: 20px; /* Safe area for modern phones */
+            padding-top: 10px;
+            background: linear-gradient(0deg, rgba(0, 10, 20, 0.95) 0%, rgba(0, 10, 20, 0.8) 80%, rgba(0,0,0,0) 100%);
             pointer-events: auto;
             z-index: 10;
-            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .menu-panel {
             display: flex;
-            gap: 1vw; 
-            padding: 1vh 2vw;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(0, 243, 255, 0.4);
-            border-radius: 12px;
-            backdrop-filter: blur(8px);
+            gap: 8px; 
+            padding: 5px;
             align-items: center;
             justify-content: center;
+            /* Allow wrapping for small screens or many buttons */
+            flex-wrap: nowrap; 
+            overflow-x: auto;
+            max-width: 100%;
         }
 
         .hidden-menu { display: none !important; }
 
-        /* Build Buttons */
+        /* Build Buttons (Larger for Touch) */
         .build-btn {
             position: relative;
-            width: 8vh;
-            height: 8vh;
-            min-width: 48px;
-            min-height: 48px;
-            background: linear-gradient(135deg, rgba(0,20,40,0.4), rgba(0,10,20,0.6));
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
+            width: 55px;
+            height: 55px;
+            /* Flex properties */
+            flex-shrink: 0;
+            
+            background: linear-gradient(135deg, rgba(0,30,60,0.6), rgba(0,10,20,0.8));
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
             color: #fff;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: transform 0.1s;
         }
 
-        .build-btn.selected { background: rgba(0, 60, 80, 0.8); border-color: #fff; box-shadow: 0 0 10px #00f3ff; }
-        .build-btn.disabled { opacity: 0.4; filter: grayscale(1); }
+        .build-btn:active { transform: scale(0.95); }
+        .build-btn.selected { background: rgba(0, 80, 100, 0.9); border-color: #fff; box-shadow: 0 0 15px #00f3ff; }
+        .build-btn.disabled { opacity: 0.5; filter: grayscale(1); }
         .build-btn.error { animation: shake 0.3s ease-in-out; }
 
-        .btn-icon { font-size: 3vh; margin-bottom: 4px; text-shadow: 0 0 5px currentColor; }
-        .btn-name { font-size: 1vh; font-weight: bold; letter-spacing: 1px; }
-        .btn-cost { font-size: 1.2vh; color: #ffd700; margin-top: 2px; font-weight: bold;}
+        .btn-icon { font-size: 24px; margin-bottom: 2px; text-shadow: 0 0 5px currentColor; }
+        .btn-name { font-size: 8px; font-weight: bold; letter-spacing: 0.5px; }
+        .btn-cost { font-size: 10px; color: #ffd700; font-weight: bold; }
 
         /* Rewarded Ad Button */
         .reward-btn {
             background: linear-gradient(135deg, rgba(80,0,80,0.6), rgba(40,0,40,0.8));
             border-color: #ff00ff;
             color: #ff00ff;
-            min-width: 9vh;
+            min-width: 55px;
         }
-        .reward-icon { font-size: 3vh; }
+        .reward-icon { font-size: 24px; margin-bottom: 0; }
 
         /* Inspect / Sell Menu Styles */
         .inspect-info {
@@ -234,28 +234,27 @@
             flex-direction: column;
             margin-right: 20px;
             color: #fff;
-            min-width: 100px;
+            min-width: 120px;
         }
-        .inspect-title { font-size: 2vh; font-weight: bold; color: #00f3ff; margin-bottom: 4px; text-transform: uppercase; }
-        .inspect-stat { font-size: 1.5vh; color: #aaa; }
+        .inspect-title { font-size: 18px; font-weight: bold; color: #00f3ff; margin-bottom: 4px; text-transform: uppercase; }
+        .inspect-stat { font-size: 14px; color: #aaa; }
 
         .sell-btn {
-            background: linear-gradient(135deg, rgba(40,0,0,0.6), rgba(20,0,0,0.8));
+            background: linear-gradient(135deg, rgba(60,0,0,0.8), rgba(30,0,0,0.9));
             border: 1px solid #ff0055;
             color: #ff0055;
-            padding: 1vh 2vw;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-width: 100px;
-            min-height: 48px;
             justify-content: center;
+            width: 80px;
+            height: 55px;
         }
-        .sell-label { font-size: 1.8vh; }
-        .sell-value { font-size: 1.5vh; margin-top: 4px; color: #fff; }
+        .sell-label { font-size: 14px; }
+        .sell-value { font-size: 12px; color: #fff; margin-top: 2px; }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -266,10 +265,10 @@
         /* === NOTIFICATIONS === */
         #center-notification {
             position: absolute;
-            top: 40%; left: 50%;
+            top: 25%; left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            font-size: 5vh;
+            font-size: 32px;
             font-weight: 900;
             color: #fff;
             text-shadow: 0 0 20px rgba(255,255,255,0.5);
@@ -296,24 +295,27 @@
             padding: 20px;
         }
         .hidden { display: none !important; }
-        h1 { font-size: 6vh; margin-bottom: 2vh; text-shadow: 0 0 15px currentColor; }
-        .subtitle { font-size: 2.5vh; color: #888; margin-bottom: 5vh; }
+        h1 { font-size: 42px; margin-bottom: 10px; text-shadow: 0 0 15px currentColor; line-height: 1.1; }
+        .subtitle { font-size: 14px; color: #888; margin-bottom: 40px; letter-spacing: 2px; }
         
         button.action-btn {
             background: transparent; color: #00f3ff; border: 2px solid #00f3ff;
-            padding: 2vh 4vw; font-family: inherit; font-size: 3vh; font-weight: bold;
-            cursor: pointer; text-transform: uppercase; margin-top: 2vh;
-            min-width: 250px;
+            padding: 15px 40px; font-family: inherit; font-size: 20px; font-weight: bold;
+            cursor: pointer; text-transform: uppercase; margin-top: 20px;
+            min-width: 220px;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
         }
+        button.action-btn:active { background: #00f3ff; color: #000; transform: scale(0.98); }
+        
         button.reset-btn {
             background: transparent; color: #555; border: 1px solid #555;
-            padding: 1.5vh 3vw; font-family: inherit; font-size: 1.8vh;
-            cursor: pointer; text-transform: uppercase; margin-top: 10px;
+            padding: 12px 20px; font-family: inherit; font-size: 12px;
+            cursor: pointer; text-transform: uppercase; margin-top: 15px;
         }
 
         /* Lang Button */
         .lang-switch {
-            position: absolute; top: 20px; right: 20px;
+            position: absolute; top: 20px; left: 20px; /* Left side for portrait menu */
             width: 44px; height: 44px;
             background: rgba(0, 0, 0, 0.6);
             border: 1px solid #fff;
@@ -323,129 +325,47 @@
         }
 
         /* Score display */
-        .score-display { font-size: 4vh; color: #ffd700; margin: 2vh 0; }
-        .score-label { color: #888; font-size: 2.5vh; }
+        .score-display { font-size: 28px; color: #ffd700; margin: 15px 0; }
+        .score-label { color: #888; font-size: 14px; }
 
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         @keyframes glitch { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
         .glitch-text { animation: glitch 0.3s ease-in-out infinite; }
-
-        /* ========================================= */
-        /* === АГРЕССИВНОЕ ИСПРАВЛЕНИЕ ДЛЯ ТЕЛЕФОНОВ === */
-        /* ========================================= */
-        
-        /* Срабатывает, если высота экрана маленькая (горизонтальный телефон) */
-        @media screen and (max-height: 500px) and (orientation: landscape) {
-            
-            /* 1. Верхняя панель: Делаем супер-узкой */
-            .hud-top {
-                height: 35px; /* Фиксированные пиксели, не проценты! */
-                padding: 0 10px;
-            }
-            .stat-value { font-size: 14px; text-shadow: none; }
-            .stat-label { display: none; /* Скрываем слова Level, Credits, чтобы не занимали место */ }
-            .stat-box { margin: 0 10px; flex-direction: row; gap: 5px; }
-            /* Добавляем иконки вместо текста через псевдоэлементы, если нужно, или просто оставляем цифры */
-
-            /* 2. Правые кнопки: Убираем из столбика справа, ставим в ряд сверху */
-            .hud-controls {
-                top: 40px; /* Сразу под верхней панелью */
-                right: 10px;
-                flex-direction: row; /* В ряд! */
-                gap: 8px;
-            }
-            .control-btn {
-                width: 28px;
-                height: 28px;
-                min-width: 28px;
-                min-height: 28px;
-                font-size: 10px;
-                background: rgba(0, 0, 0, 0.3); /* Более прозрачные */
-            }
-
-            /* 3. Нижнее меню: Делаем прозрачным и маленьким */
-            .toolbar-container {
-                padding-bottom: 2px;
-                width: auto;
-            }
-            .menu-panel {
-                padding: 2px 5px;
-                border-radius: 8px;
-                background: rgba(0, 0, 0, 0.4); /* Прозрачный фон, чтобы видеть врагов */
-                border: 1px solid rgba(0, 243, 255, 0.2);
-                gap: 4px;
-            }
-
-            /* 4. Кнопки башен: Крошечные, БЕЗ текста */
-            .build-btn {
-                width: 40px;
-                height: 40px;
-                min-width: 40px;
-                min-height: 40px;
-                margin: 0 2px;
-            }
-            .btn-icon { font-size: 16px; margin-bottom: 0; text-shadow: none; }
-            .btn-name { display: none !important; /* СКРЫВАЕМ НАЗВАНИЯ */ }
-            .btn-cost { font-size: 9px; margin-top: 0; color: #fff; }
-
-            /* 5. Кнопка рекламы */
-            .reward-btn { min-width: 40px; }
-            #lbl-ad-text { display: none !important; }
-            .reward-icon { font-size: 16px; margin: 0; text-shadow: none; }
-
-            /* 6. Меню продажи (инспект) */
-            .inspect-info { min-width: 60px; margin-right: 5px; }
-            .inspect-title { font-size: 10px; }
-            .inspect-stat { font-size: 10px; }
-            .sell-btn { 
-                min-width: 50px; 
-                min-height: 35px; 
-                padding: 2px; 
-            }
-            .sell-label { font-size: 10px; }
-            .sell-value { font-size: 10px; margin-top: 0; }
-
-            /* 7. Уведомление по центру - выше */
-            #center-notification {
-                font-size: 24px;
-                top: 20%;
-            }
-        }
     </style>
 </head>
 <body class="in-menu">
 
-    <!-- ROTATE MESSAGE -->
+    <!-- ROTATE MESSAGE (Now shows on LANDSCAPE) -->
     <div id="rotate-message">
-        <h1>ПОЖАЛУЙСТА, ПОВЕРНИТЕ УСТРОЙСТВО ↻</h1>
+        <h1>ПОЖАЛУЙСТА, ПОВЕРНИТЕ УСТРОЙСТВО<br>ВЕРТИКАЛЬНО ↻</h1>
     </div>
 
     <div id="ui-layer">
         <div class="hud-top">
             <div class="stat-group">
                 <div class="stat-box">
-                    <span class="stat-label" id="lbl-level">Level</span>
+                    <span class="stat-label" id="lbl-level">LVL</span>
                     <span class="stat-value" id="level-value">1</span>
                 </div>
                 <div class="stat-box">
-                    <span class="stat-label" id="lbl-system">System</span>
+                    <span class="stat-label" id="lbl-system">HP</span>
                     <span class="stat-value" id="hp-display">100%</span>
                 </div>
                 <div class="stat-box">
-                    <span class="stat-label" id="lbl-credits">Credits</span>
+                    <span class="stat-label" id="lbl-credits">$$$</span>
                     <span class="stat-value" id="money-display">150</span>
                 </div>
                 <div class="stat-box">
-                    <span class="stat-label" id="lbl-wave">Wave</span>
+                    <span class="stat-label" id="lbl-wave">WAVE</span>
                     <span class="stat-value" id="wave-display">1/3</span>
                 </div>
             </div>
-        </div>
 
-        <div class="hud-controls">
-            <div class="control-btn lang-btn" onclick="toggleLanguage()">RU</div>
-            <div class="control-btn" onclick="Sound.toggleMute()" id="btn-sound">🔊</div>
-            <div class="control-btn" onclick="game.togglePause()" id="btn-pause">⏸</div>
+            <div class="hud-controls">
+                <!-- Lang btn moved to settings/start screen mostly, keeping compact controls here -->
+                <div class="control-btn" onclick="Sound.toggleMute()" id="btn-sound">🔊</div>
+                <div class="control-btn" onclick="game.togglePause()" id="btn-pause">⏸</div>
+            </div>
         </div>
 
         <div id="center-notification">WAVE 1</div>
@@ -458,7 +378,7 @@
                      onclick="game.watchAd()"
                      id="btn-reward">
                     <div class="reward-icon">📺</div>
-                    <div class="btn-name" id="lbl-ad-text">РЕКЛАМА</div>
+                    <div class="btn-name" id="lbl-ad-text">AD</div>
                     <div class="btn-cost">+100</div>
                 </div>
 
@@ -570,7 +490,7 @@
         
         const TEXTS = {
             title: { ru: 'PROTOCOL ZERO', en: 'PROTOCOL ZERO' },
-            subtitle: { ru: 'КИБЕР-БАШЕННАЯ ОБОРОНА', en: 'CYBERPUNK TOWER DEFENSE' },
+            subtitle: { ru: 'МОБИЛЬНАЯ ОБОРОНА', en: 'MOBILE TOWER DEFENSE' },
             init_btn: { ru: 'ИГРАТЬ', en: 'PLAY' },
             settings: { ru: 'НАСТРОЙКИ', en: 'SETTINGS' },
             title_settings: { ru: 'НАСТРОЙКИ', en: 'SETTINGS' },
@@ -578,43 +498,43 @@
             sound: { ru: 'ЗВУК', en: 'SOUND' },
             on: { ru: 'ВКЛ', en: 'ON' },
             off: { ru: 'ВЫКЛ', en: 'OFF' },
-            level: { ru: 'Уровень', en: 'Level' },
-            system: { ru: 'Система', en: 'System' },
-            credits: { ru: 'Кредиты', en: 'Credits' },
-            wave: { ru: 'Волна', en: 'Wave' },
+            level: { ru: 'LVL', en: 'LVL' },
+            system: { ru: 'HP', en: 'HP' },
+            credits: { ru: '$$$', en: '$$$' },
+            wave: { ru: 'WAVE', en: 'WAVE' },
             paused: { ru: 'ПАУЗА', en: 'PAUSED' },
             resume: { ru: 'ПРОДОЛЖИТЬ', en: 'RESUME' },
-            reset_level: { ru: 'СБРОС ПРОГРЕССА (LVL 1)', en: 'RESET PROGRESS (LVL 1)' },
-            game_over: { ru: 'СИСТЕМНЫЙ СБОЙ', en: 'SYSTEM FAILURE' },
+            reset_level: { ru: 'СБРОС УРОВНЯ', en: 'RESET LEVEL' },
+            game_over: { ru: 'СБОЙ', en: 'FAILURE' },
             score: { ru: 'СЧЁТ: ', en: 'SCORE: ' },
-            retry: { ru: 'ПОВТОРИТЬ', en: 'RETRY LEVEL' },
-            reset_run: { ru: 'СБРОСИТЬ ВСЁ', en: 'RESET RUN' },
-            victory: { ru: 'УГРОЗА УСТРАНЕНА', en: 'THREAT ELIMINATED' },
-            next_level: { ru: 'СЛЕД. УРОВЕНЬ', en: 'NEXT LEVEL' },
-            warning: { ru: 'ВНИМАНИЕ: ВТОРЖЕНИЕ', en: 'WARNING: INTRUSION' },
+            retry: { ru: 'ПОВТОРИТЬ', en: 'RETRY' },
+            reset_run: { ru: 'СБРОС ИГРЫ', en: 'FULL RESET' },
+            victory: { ru: 'ПОБЕДА', en: 'VICTORY' },
+            next_level: { ru: 'ДАЛЕЕ', en: 'NEXT' },
+            warning: { ru: 'ВТОРЖЕНИЕ!', en: 'INTRUSION!' },
             sell: { ru: 'ПРОДАТЬ', en: 'SELL' },
-            dmg: { ru: 'УРОН: ', en: 'DMG: ' },
-            protocol_init: { ru: 'ПРОТОКОЛ ЗАПУЩЕН', en: 'PROTOCOL INITIALIZED' },
-            breach: { ru: 'ПРОБОЙ ЗАЩИТЫ', en: 'BREACH DETECTED' },
-            wave_cleared: { ru: 'ЗАЧИЩЕНА', en: 'CLEARED' },
-            wave_incoming: { ru: 'ПРИБЛИЖАЕТСЯ', en: 'INCOMING' },
+            dmg: { ru: 'DMG: ', en: 'DMG: ' },
+            protocol_init: { ru: 'ЗАПУСК...', en: 'INIT...' },
+            breach: { ru: 'ПРОБОЙ!', en: 'BREACH!' },
+            wave_cleared: { ru: 'ОТБИТА', en: 'CLEARED' },
+            wave_incoming: { ru: 'АТАКА', en: 'INCOMING' },
             level_initiated: { ru: 'УРОВЕНЬ', en: 'LEVEL' },
-            retrying: { ru: 'ПЕРЕЗАГРУЗКА...', en: 'RETRYING...' },
-            rebooted: { ru: 'СИСТЕМА ПЕРЕЗАГРУЖЕНА', en: 'SYSTEM REBOOTED' },
-            insufficient_funds: { ru: 'МАЛО КРЕДИТОВ', en: 'INSUFFICIENT FUNDS' },
-            build_cancelled: { ru: 'ОТМЕНА', en: 'CANCELLED' },
-            selected: { ru: 'ВЫБРАН: ', en: 'SELECTED: ' },
-            ad_text: { ru: '📺 РЕКЛАМА', en: '📺 AD' },
-            reward_get: { ru: 'НАГРАДА: +100', en: 'REWARD: +100' },
-            cryo: { ru: 'КРИО', en: 'CRYO' },
-            gatling: { ru: 'ГАТЛИНГ', en: 'GATLING' },
-            railgun: { ru: 'РЕЛЬСА', en: 'RAILGUN' },
-            missile: { ru: 'РАКЕТА', en: 'MISSILE' },
-            main_menu: { ru: 'В МЕНЮ', en: 'MAIN MENU' },
-            tower_gatling: { ru: 'ГАТЛИНГ', en: 'GATLING' },
-            tower_railgun: { ru: 'РЕЛЬСОТРОН', en: 'RAILGUN' },
-            tower_missile: { ru: 'РАКЕТНИЦА', en: 'MISSILE' },
-            tower_cryo: { ru: 'КРИОПУШКА', en: 'CRYO' }
+            retrying: { ru: 'ПОВТОР...', en: 'RETRY...' },
+            rebooted: { ru: 'ПЕРЕЗАГРУЗКА', en: 'REBOOT' },
+            insufficient_funds: { ru: 'НЕТ ДЕНЕГ', en: 'NO FUNDS' },
+            build_cancelled: { ru: 'ОТМЕНА', en: 'CANCEL' },
+            selected: { ru: 'ВЫБОР: ', en: 'SEL: ' },
+            ad_text: { ru: 'AD', en: 'AD' },
+            reward_get: { ru: '+100 $$$', en: '+100 $$$' },
+            cryo: { ru: 'CRYO', en: 'CRYO' },
+            gatling: { ru: 'GATLING', en: 'GATLING' },
+            railgun: { ru: 'RAIL', en: 'RAIL' },
+            missile: { ru: 'MISSILE', en: 'MISSILE' },
+            main_menu: { ru: 'В МЕНЮ', en: 'MENU' },
+            tower_gatling: { ru: 'GATLING', en: 'GATLING' },
+            tower_railgun: { ru: 'RAILGUN', en: 'RAILGUN' },
+            tower_missile: { ru: 'MISSILE', en: 'MISSILE' },
+            tower_cryo: { ru: 'CRYO', en: 'CRYO' }
         };
 
         function t(id) {
@@ -710,7 +630,7 @@
         const AdManager = {
             showFullscreen: function(onCloseCallback) {
                 if (ysdk) {
-                    let callbackExecuted = false; // Flag to prevent double execution
+                    let callbackExecuted = false; 
                     ysdk.adv.showFullscreenAdv({
                         callbacks: {
                             onOpen: () => {
@@ -1476,22 +1396,29 @@
         /** === GAME CLASSES === */
         class GameMap {
             constructor() {
+                // Vertical layouts (Top -> Bottom)
                 this.layouts = [
+                    // Layout 1: Simple S-curve vertical
                     [ 
-                        {x: 0.0, y: 0.25}, 
-                        {x: 0.35, y: 0.25}, 
-                        {x: 0.35, y: 0.75}, 
-                        {x: 0.75, y: 0.75}, 
-                        {x: 0.75, y: 0.4}, 
-                        {x: 1.0, y: 0.4}
+                        {x: 0.2, y: 0.0}, // Top Left Start
+                        {x: 0.2, y: 0.3},
+                        {x: 0.8, y: 0.3},
+                        {x: 0.8, y: 0.6},
+                        {x: 0.2, y: 0.6},
+                        {x: 0.2, y: 0.85},
+                        {x: 0.5, y: 0.85},
+                        {x: 0.5, y: 1.0}  // Bottom Center End
                     ],
+                    // Layout 2: Zig Zag
                     [ 
-                        {x: 0.0, y: 0.2}, 
-                        {x: 0.7, y: 0.2}, 
-                        {x: 0.7, y: 0.5},  
-                        {x: 0.3, y: 0.5},  
-                        {x: 0.3, y: 0.8}, 
-                        {x: 1.0, y: 0.8}
+                        {x: 0.5, y: 0.0}, // Top Center Start
+                        {x: 0.5, y: 0.15},
+                        {x: 0.15, y: 0.15},
+                        {x: 0.15, y: 0.4},
+                        {x: 0.85, y: 0.4},
+                        {x: 0.85, y: 0.7},
+                        {x: 0.5, y: 0.7},
+                        {x: 0.5, y: 1.0}  // Bottom Center End
                     ]
                 ];
                 
@@ -1512,7 +1439,18 @@
 
             resize(width, height, gridSize) {
                 this.pathWidth = gridSize * 1.5;
-                this.screenWaypoints = this.waypoints.map(p => ({ x: p.x * width, y: p.y * height }));
+                // Add margins to prevent UI overlap (Top HUD 60px, Bottom Toolbar ~80px)
+                // We use logic coordinates 0-1 but map them to the playable area
+                
+                // Playable area definition
+                const topMargin = 70; 
+                const bottomMargin = 100;
+                const safeHeight = height - topMargin - bottomMargin;
+                
+                this.screenWaypoints = this.waypoints.map(p => ({ 
+                    x: p.x * width, 
+                    y: topMargin + (p.y * safeHeight)
+                }));
             }
 
             isCellBlocked(cellX, cellY, cellSize) {
@@ -2673,10 +2611,11 @@
                 const h = window.innerHeight;
                 const dpr = window.devicePixelRatio || 1;
 
-                // Adaptive Grid: Divide height by 12 for mobile-friendly vertical spacing
-                // On very wide screens, bound it by width to avoid tiny grids
-                const rows = 12;
-                this.gridSize = Math.floor(h / rows);
+                // Adaptive Grid for Portrait:
+                // Divide WIDTH by 9 to get cell size (approx 8 playable cells + margins)
+                // This ensures everything stays big enough on narrow screens
+                const cols = 9;
+                this.gridSize = Math.floor(w / cols);
                 
                 // Recalculate global scale factor based on original design (40px grid)
                 this.scaleFactor = this.gridSize / 40;
@@ -2829,7 +2768,7 @@
                     this.passiveIncomeTimer = 0;
                     this.data.money += 3;
                     const w = this.renderer.width;
-                    this.floatingTexts.push(new FloatingText(w / 2, 70, "+3", "#ffd700"));
+                    this.floatingTexts.push(new FloatingText(w / 2, 90, "+3", "#ffd700"));
                     this.updateUI();
                 }
 
