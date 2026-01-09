@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>PROTOCOL ZERO</title>
     <!-- Yandex Games SDK -->
     <script src="https://yandex.ru/games/sdk/v2"></script>
@@ -29,6 +29,7 @@
             -ms-user-select: none;
             
             touch-action: none; 
+            overscroll-behavior: none;
             
             -webkit-touch-callout: none; 
             -webkit-tap-highlight-color: transparent; 
@@ -50,6 +51,7 @@
             display: block;
             width: 100%;
             height: 100%;
+            /* High contrast for cyberpunk feel */
             filter: contrast(1.1) brightness(1.1); 
         }
 
@@ -75,7 +77,8 @@
             animation: pulse 1s infinite;
         }
 
-        @media screen and (orientation: portrait) {
+        /* Only show rotate message on portrait phones */
+        @media screen and (orientation: portrait) and (max-width: 768px) {
             #rotate-message { display: flex; }
         }
 
@@ -87,30 +90,33 @@
             pointer-events: none;
             z-index: 100;
             transition: opacity 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
         body.in-menu #ui-layer { opacity: 0; pointer-events: none; }
 
         /* === HUD TOP === */
         .hud-top {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 60px;
+            height: 8vh;
+            min-height: 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: rgba(0, 5, 10, 0.85);
             border-bottom: 1px solid rgba(0, 243, 255, 0.3);
-            padding: 0 10px;
+            padding: 0 2vw;
             backdrop-filter: blur(4px);
             z-index: 10;
+            pointer-events: auto;
         }
 
         .stat-group {
             display: flex;
-            gap: 10px;
+            gap: 2vw;
             width: 100%;
-            justify-content: space-around;
+            justify-content: center;
         }
 
         .stat-box {
@@ -121,7 +127,7 @@
         }
 
         .stat-label {
-            font-size: 8px;
+            font-size: 1.2vh;
             color: #00f3ff;
             opacity: 0.7;
             letter-spacing: 1px;
@@ -130,7 +136,7 @@
         }
 
         .stat-value {
-            font-size: 16px;
+            font-size: 2.5vh;
             font-weight: bold;
             color: #fff;
             text-shadow: 0 0 5px #00f3ff;
@@ -140,20 +146,23 @@
         #hp-display.critical { color: #ff0055; text-shadow: 0 0 10px #ff0055; animation: blink 0.5s infinite; }
         #money-display { color: #ffd700; text-shadow: 0 0 5px #ffd700; }
 
-        /* === HUD CONTROLS (Pause/Mute) === */
+        /* === HUD CONTROLS === */
         .hud-controls {
             position: absolute;
-            top: 70px;
+            top: 9vh;
             right: 10px;
             display: flex;
+            flex-direction: column;
             gap: 10px;
             pointer-events: auto;
             z-index: 20;
         }
 
         .control-btn {
-            width: 44px;
-            height: 44px;
+            width: 6vh;
+            height: 6vh;
+            min-width: 32px;
+            min-height: 32px;
             background: rgba(0, 10, 20, 0.8);
             border: 1px solid #00f3ff;
             border-radius: 50%;
@@ -161,7 +170,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 2vh;
             font-weight: bold;
             cursor: pointer;
             backdrop-filter: blur(4px);
@@ -174,20 +183,18 @@
 
         /* === TOOLBARS === */
         .toolbar-container {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: auto;
-            max-width: 98vw;
+            display: flex;
+            justify-content: center;
+            padding-bottom: 2vh;
             pointer-events: auto;
             z-index: 10;
+            width: 100%;
         }
 
         .menu-panel {
             display: flex;
-            gap: 8px; 
-            padding: 10px;
+            gap: 1vw; 
+            padding: 1vh 2vw;
             background: rgba(0, 0, 0, 0.7);
             border: 1px solid rgba(0, 243, 255, 0.4);
             border-radius: 12px;
@@ -202,8 +209,10 @@
         /* Build Buttons */
         .build-btn {
             position: relative;
-            width: 60px;
-            height: 60px;
+            width: 8vh;
+            height: 8vh;
+            min-width: 48px;
+            min-height: 48px;
             background: linear-gradient(135deg, rgba(0,20,40,0.4), rgba(0,10,20,0.6));
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 8px;
@@ -222,21 +231,21 @@
         .build-btn.disabled { opacity: 0.4; filter: grayscale(1); cursor: not-allowed; }
         .build-btn.error { animation: shake 0.3s ease-in-out; }
 
-        .btn-icon { font-size: 18px; margin-bottom: 4px; text-shadow: 0 0 5px currentColor; }
-        .btn-name { font-size: 7px; font-weight: bold; letter-spacing: 1px; }
-        .btn-cost { font-size: 9px; color: #ffd700; margin-top: 2px; font-weight: bold;}
+        .btn-icon { font-size: 3vh; margin-bottom: 4px; text-shadow: 0 0 5px currentColor; }
+        .btn-name { font-size: 1vh; font-weight: bold; letter-spacing: 1px; }
+        .btn-cost { font-size: 1.2vh; color: #ffd700; margin-top: 2px; font-weight: bold;}
 
         /* Rewarded Ad Button */
         .reward-btn {
             background: linear-gradient(135deg, rgba(80,0,80,0.6), rgba(40,0,40,0.8));
             border-color: #ff00ff;
             color: #ff00ff;
-            min-width: 70px;
+            min-width: 9vh;
         }
         .reward-btn:hover { background: rgba(255, 0, 255, 0.2); border-color: #fff; }
-        .reward-icon { font-size: 18px; margin-bottom: 2px; }
-        .reward-btn .btn-name { font-size: 6px; color: #ffaaff; }
-        .reward-btn .btn-cost { color: #00ff00; font-size: 10px; }
+        .reward-icon { font-size: 3vh; margin-bottom: 2px; }
+        .reward-btn .btn-name { font-size: 1vh; color: #ffaaff; }
+        .reward-btn .btn-cost { color: #00ff00; font-size: 1.2vh; }
 
         /* Inspect / Sell Menu Styles */
         .inspect-info {
@@ -246,14 +255,14 @@
             color: #fff;
             min-width: 100px;
         }
-        .inspect-title { font-size: 14px; font-weight: bold; color: #00f3ff; margin-bottom: 4px; text-transform: uppercase; }
-        .inspect-stat { font-size: 10px; color: #aaa; }
+        .inspect-title { font-size: 2vh; font-weight: bold; color: #00f3ff; margin-bottom: 4px; text-transform: uppercase; }
+        .inspect-stat { font-size: 1.5vh; color: #aaa; }
 
         .sell-btn {
             background: linear-gradient(135deg, rgba(40,0,0,0.6), rgba(20,0,0,0.8));
             border: 1px solid #ff0055;
             color: #ff0055;
-            padding: 10px 20px;
+            padding: 1vh 2vw;
             border-radius: 6px;
             cursor: pointer;
             font-family: inherit;
@@ -262,14 +271,14 @@
             flex-direction: column;
             align-items: center;
             transition: all 0.2s;
-            width: 100px;
-            min-height: 44px;
+            min-width: 100px;
+            min-height: 48px;
             justify-content: center;
         }
         .sell-btn:hover { background: rgba(255, 0, 85, 0.2); box-shadow: 0 0 15px rgba(255, 0, 85, 0.4); transform: translateY(-2px); color: #fff; }
         .sell-btn:active { transform: scale(0.95); }
-        .sell-label { font-size: 14px; letter-spacing: 1px; }
-        .sell-value { font-size: 10px; margin-top: 4px; color: #fff; }
+        .sell-label { font-size: 1.8vh; letter-spacing: 1px; }
+        .sell-value { font-size: 1.5vh; margin-top: 4px; color: #fff; }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -284,7 +293,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            font-size: 32px;
+            font-size: 5vh;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 4px;
@@ -313,16 +322,15 @@
             padding: 20px;
         }
         .hidden { display: none !important; }
-        h1 { font-size: 36px; margin-bottom: 10px; letter-spacing: 3px; text-shadow: 0 0 15px currentColor; }
-        .subtitle { font-size: 14px; color: #888; margin-bottom: 30px; letter-spacing: 2px; }
+        h1 { font-size: 6vh; margin-bottom: 2vh; letter-spacing: 3px; text-shadow: 0 0 15px currentColor; }
+        .subtitle { font-size: 2.5vh; color: #888; margin-bottom: 5vh; letter-spacing: 2px; }
         
         button.action-btn {
             background: transparent; color: #00f3ff; border: 2px solid #00f3ff;
-            padding: 15px 30px; font-family: inherit; font-size: 18px; font-weight: bold;
-            cursor: pointer; text-transform: uppercase; transition: all 0.2s; margin-top: 20px;
+            padding: 2vh 4vw; font-family: inherit; font-size: 3vh; font-weight: bold;
+            cursor: pointer; text-transform: uppercase; transition: all 0.2s; margin-top: 2vh;
             box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-            min-width: 200px;
-            min-height: 50px;
+            min-width: 250px;
         }
         button.action-btn:hover { background: #00f3ff; color: #000; box-shadow: 0 0 30px #00f3ff; }
         
@@ -331,9 +339,8 @@
         
         button.reset-btn {
             background: transparent; color: #555; border: 1px solid #555;
-            padding: 10px 20px; font-family: inherit; font-size: 12px;
+            padding: 1.5vh 3vw; font-family: inherit; font-size: 1.8vh;
             cursor: pointer; text-transform: uppercase; transition: all 0.2s; margin-top: 10px;
-            min-height: 44px;
         }
         button.reset-btn:hover { color: #fff; border-color: #fff; }
 
@@ -359,12 +366,12 @@
 
         /* Score display on end screens */
         .score-display {
-            font-size: 24px;
+            font-size: 4vh;
             color: #ffd700;
-            margin: 20px 0;
+            margin: 2vh 0;
             text-shadow: 0 0 10px #ffd700;
         }
-        .score-label { color: #888; font-size: 14px; }
+        .score-label { color: #888; font-size: 2.5vh; }
 
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
         
@@ -384,15 +391,6 @@
         
         .glitch-text {
             animation: glitch 0.3s ease-in-out infinite;
-        }
-
-        @media (max-width: 600px) {
-            .build-btn { width: 50px; height: 50px; }
-            .reward-btn { min-width: 60px; }
-            #center-notification { font-size: 24px; }
-            .hud-top { padding: 0 5px; }
-            .stat-value { font-size: 14px; }
-            h1 { font-size: 28px; }
         }
     </style>
 </head>
@@ -1373,7 +1371,7 @@
                 invalidBuild: 'rgba(255, 0, 85, 0.3)',
                 selection: 'rgba(255, 255, 255, 0.8)'
             },
-            gridSize: 40,
+            // gridSize now dynamic
             player: { startHp: 100, startMoney: 250 }, 
             maxWaves: 10
         };
@@ -1436,13 +1434,17 @@
         class Particle {
             constructor(x, y, color, type = 'spark') {
                 this.x = x; this.y = y; this.color = color; this.type = type;
-                const speed = type === 'explosion' ? Utils.randRange(1, 4) : Utils.randRange(0.5, 2);
+                
+                // Get scale factor from game instance
+                const s = window.game ? window.game.scaleFactor : 1;
+                
+                const speed = (type === 'explosion' ? Utils.randRange(1, 4) : Utils.randRange(0.5, 2)) * s;
                 const angle = Math.random() * Math.PI * 2;
                 this.vx = Math.cos(angle) * speed;
                 this.vy = Math.sin(angle) * speed;
                 this.life = 1.0;
                 this.decay = type === 'explosion' ? Utils.randRange(0.02, 0.05) : 0.05;
-                this.size = type === 'explosion' ? Utils.randRange(2, 4) : Utils.randRange(1, 2);
+                this.size = (type === 'explosion' ? Utils.randRange(2, 4) : Utils.randRange(1, 2)) * s;
             }
             update() {
                 this.x += this.vx; this.y += this.vy;
@@ -1477,7 +1479,7 @@
                 this.currentMapIndex = 0;
                 this.waypoints = this.layouts[0];
                 this.screenWaypoints = [];
-                this.pathWidth = 60; 
+                this.pathWidth = 60; // Base value, will be scaled
             }
 
             loadMap(index) {
@@ -1489,17 +1491,9 @@
                 this.loadMap(this.currentMapIndex + 1);
             }
 
-            resize(width, height) {
-                // ADDED PADDING TO PREVENT UI OVERLAP
-                const paddingX = isMobile ? 60 : 40;
-                const paddingY = isMobile ? 80 : 60; 
-                const safeW = width - paddingX * 2;
-                const safeH = height - paddingY * 2;
-
-                this.screenWaypoints = this.waypoints.map(p => ({ 
-                    x: p.x * safeW + paddingX, 
-                    y: p.y * safeH + paddingY 
-                }));
+            resize(width, height, gridSize) {
+                this.pathWidth = gridSize * 1.5;
+                this.screenWaypoints = this.waypoints.map(p => ({ x: p.x * width, y: p.y * height }));
             }
 
             isCellBlocked(cellX, cellY, cellSize) {
@@ -1520,17 +1514,22 @@
                 this.typeId = type; 
                 this.enemyType = config.type; 
                 
+                // Get global scale from game singleton
+                const s = window.game ? window.game.scaleFactor : 1;
+
                 const hpMult = Math.pow(1.2, waveNum - 1);
                 const speedMult = Math.min(2.0, 1 + (Math.floor((waveNum - 1) / 5) * 0.05));
 
                 this.maxHp = Math.floor(config.hp * hpMult);
                 this.hp = this.maxHp;
-                this.baseSpeed = config.speed * speedMult;
+                
+                // Scale speed and radius relative to screen size
+                this.baseSpeed = config.speed * speedMult * s;
                 this.speed = this.baseSpeed;
                 
                 this.reward = config.reward;
                 this.color = config.color;
-                this.radius = config.radius;
+                this.radius = config.radius * s;
                 this.regen = config.regen || 0;
                 
                 this.path = path;
@@ -1566,8 +1565,9 @@
                     this.healTimer += dt;
                     if (this.healTimer > 2000) {
                         this.healTimer = 0;
+                        const range = 100 * (window.game ? window.game.scaleFactor : 1);
                         allEnemies.forEach(e => {
-                            if (e !== this && !e.dead && Utils.dist(this.x, this.y, e.x, e.y) < 100) {
+                            if (e !== this && !e.dead && Utils.dist(this.x, this.y, e.x, e.y) < range) {
                                 e.hp = Math.min(e.maxHp, e.hp + 20);
                             }
                         });
@@ -1725,6 +1725,12 @@
                 this.x = x; this.y = y; this.type = type; this.config = TOWER_TYPES[type];
                 this.angle = 0; this.cooldownTimer = 0; this.muzzleFlashTimer = 0;
                 this.pulseTimer = 0; 
+                
+                const s = window.game ? window.game.scaleFactor : 1;
+                // Scale range and projectile speed locally for this instance
+                this.range = this.config.range * s;
+                this.projectileSpeed = this.config.projectileSpeed * s;
+                this.blastRadius = (this.config.blastRadius || 0) * s;
             }
             update(dt, enemies, game) {
                 if (this.cooldownTimer > 0) this.cooldownTimer -= dt;
@@ -1739,7 +1745,8 @@
                 
                 for (const enemy of enemies) {
                     const d = Utils.dist(this.x, this.y, enemy.x, enemy.y);
-                    if (d <= this.config.range) {
+                    // Use scaled range
+                    if (d <= this.range) {
                         if (enemy.enemyType === 'HEALER') {
                             target = enemy;
                             break; 
@@ -1763,7 +1770,9 @@
             shoot(target, game) {
                 if (this.config.type === 'projectile') {
                     game.addProjectile(new Projectile({
-                        x: this.x, y: this.y, target: target, damage: this.config.damage, speed: this.config.projectileSpeed, color: this.config.color, type: 'bullet', effect: this.config.effect
+                        x: this.x, y: this.y, target: target, damage: this.config.damage, 
+                        speed: this.projectileSpeed, // Use scaled speed
+                        color: this.config.color, type: 'bullet', effect: this.config.effect
                     }));
                     if (this.type === 'cryo') {
                         Sound.play('shot_cryo');
@@ -1780,8 +1789,10 @@
                     game.addProjectile(new Projectile({
                         x: this.x, y: this.y, target: target,
                         targetX: target.x, targetY: target.y,
-                        damage: this.config.damage, speed: this.config.projectileSpeed,
-                        color: this.config.color, type: 'missile', blastRadius: this.config.blastRadius
+                        damage: this.config.damage, 
+                        speed: this.projectileSpeed,
+                        color: this.config.color, type: 'missile', 
+                        blastRadius: this.blastRadius // Use scaled radius
                     }));
                     Sound.play('shot_missile');
                 }
@@ -1864,10 +1875,24 @@
                 this.height = canvas.height;
                 this.time = 0;
             }
-            resize(w, h) {
-                this.canvas.width = w; this.canvas.height = h;
-                this.width = w; this.height = h;
+            
+            resize(w, h, dpr) {
+                // Set logic dimensions
+                this.width = w;
+                this.height = h;
+                
+                // Set buffer dimensions (High DPI)
+                this.canvas.width = w * dpr;
+                this.canvas.height = h * dpr;
+                
+                // Set CSS dimensions
+                this.canvas.style.width = '100%';
+                this.canvas.style.height = '100%';
+                
+                // Normalize coordinates
+                this.ctx.scale(dpr, dpr);
             }
+            
             clear() {
                 this.ctx.fillStyle = CONFIG.colors.bg;
                 this.ctx.fillRect(0, 0, this.width, this.height);
@@ -1889,13 +1914,13 @@
 
                 this.clear();
                 
-                this.drawGrid();
+                this.drawGrid(game.gridSize);
                 this.drawPath(game.map);
-                this.drawBaseSpawn(game.map);
+                this.drawBaseSpawn(game.map, game.gridSize);
 
-                game.enemies.forEach(e => this.drawEnemy(e));
-                game.towers.forEach(t => this.drawTower(t, game.data.selectedTower === t));
-                game.projectiles.forEach(p => this.drawProjectile(p));
+                game.enemies.forEach(e => this.drawEnemy(e, game.gridSize));
+                game.towers.forEach(t => this.drawTower(t, game.data.selectedTower === t, game.gridSize));
+                game.projectiles.forEach(p => this.drawProjectile(p, game.gridSize));
                 this.drawParticles(game.particles);
                 game.floatingTexts.forEach(ft => this.drawFloatingText(ft));
 
@@ -1906,9 +1931,8 @@
                 ctx.restore();
             }
 
-            drawGrid() {
+            drawGrid(gs) {
                 const ctx = this.ctx;
-                const gs = CONFIG.gridSize;
                 ctx.strokeStyle = CONFIG.colors.grid;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
@@ -1952,9 +1976,9 @@
                 ctx.restore();
             }
 
-            drawEnemy(e) {
+            drawEnemy(e, gs) {
                 const ctx = this.ctx;
-                const size = e.radius;
+                const size = e.radius; // already scaled in Enemy constructor
                 
                 ctx.save();
                 ctx.translate(e.x, e.y);
@@ -1963,8 +1987,6 @@
                     if (!isMobile) {
                         ctx.shadowBlur = 15;
                         ctx.shadowColor = '#00ffff';
-                    } else {
-                        ctx.shadowBlur = 0;
                     }
                     ctx.strokeStyle = '#00ffff';
                     ctx.lineWidth = 1;
@@ -1977,8 +1999,6 @@
                     if (!isMobile) {
                         ctx.shadowBlur = 10; 
                         ctx.shadowColor = e.color;
-                    } else {
-                        ctx.shadowBlur = 0;
                     }
                     ctx.fillStyle = e.color;
                 }
@@ -2081,10 +2101,11 @@
                 ctx.restore();
             }
 
-            drawTower(tower, isSelected) {
+            drawTower(tower, isSelected, gs) {
                 const ctx = this.ctx;
                 ctx.save();
                 ctx.translate(tower.x, tower.y);
+                const scale = gs / 40; // Base visual scale on original grid 40
 
                 if (isSelected) {
                     ctx.save();
@@ -2092,9 +2113,11 @@
                     ctx.lineWidth = 2;
                     const pulse = 1 + Math.sin(this.time * 0.01) * 0.1;
                     ctx.scale(pulse, pulse);
-                    ctx.strokeRect(-20, -20, 40, 40);
+                    ctx.strokeRect(-gs*0.5, -gs*0.5, gs, gs);
                     ctx.restore();
                 }
+
+                ctx.scale(scale, scale); // Scale drawing operations
 
                 ctx.fillStyle = '#0a0a10';
                 ctx.shadowBlur = 0;
@@ -2108,8 +2131,6 @@
                 if (!isMobile) {
                     ctx.shadowBlur = 10;
                     ctx.shadowColor = tower.config.color;
-                } else {
-                    ctx.shadowBlur = 0;
                 }
                 
                 ctx.fillStyle = tower.config.color;
@@ -2178,28 +2199,25 @@
                 ctx.restore();
             }
 
-            drawProjectile(p) {
+            drawProjectile(p, gs) {
                 const ctx = this.ctx;
                 ctx.save();
                 
                 if (!isMobile) {
                     ctx.shadowBlur = 10;
                     ctx.shadowColor = p.color;
-                } else {
-                    ctx.shadowBlur = 0;
                 }
 
                 ctx.fillStyle = p.color;
                 ctx.strokeStyle = p.color;
 
+                const scale = gs / 40;
+
                 if (p.type === 'bullet') {
                     ctx.translate(p.x, p.y);
+                    ctx.scale(scale, scale);
                     if (p.effect === 'freeze') {
-                         if (!isMobile) {
-                             ctx.shadowBlur = 15;
-                         } else {
-                             ctx.shadowBlur = 0;
-                         }
+                         if (!isMobile) ctx.shadowBlur = 15;
                          ctx.rotate(Math.atan2(p.target.y - p.y, p.target.x - p.x));
                          ctx.beginPath();
                          ctx.moveTo(6, 0);
@@ -2207,17 +2225,14 @@
                          ctx.lineTo(-4, -3);
                          ctx.fill();
                     } else {
-                        if (!isMobile) {
-                            ctx.shadowBlur = 20; 
-                        } else {
-                            ctx.shadowBlur = 0;
-                        }
+                        if (!isMobile) ctx.shadowBlur = 20; 
                         ctx.rotate(Math.atan2(p.target.y - p.y, p.target.x - p.x));
                         ctx.beginPath(); ctx.arc(0, 0, 2.5, 0, Math.PI * 2); ctx.fill();
                         ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fillRect(-10, -1, 10, 2);
                     }
                 } else if (p.type === 'missile') {
                     ctx.translate(p.x, p.y);
+                    ctx.scale(scale, scale);
                     ctx.rotate(Math.atan2(p.targetY - p.y, p.targetX - p.x));
                     ctx.fillStyle = '#fff';
                     ctx.fillRect(0, -2, 8, 4);
@@ -2226,9 +2241,13 @@
                     
                     if (p.trail) {
                         ctx.save();
-                        ctx.translate(-p.x, -p.y); 
+                        // Untransform to draw trails correctly in world space, then re-apply scale manual if needed
+                        // But easier to draw trail in world coords
+                        ctx.setTransform(1,0,0,1,0,0); // Identity
+                        ctx.scale(window.devicePixelRatio, window.devicePixelRatio); // Back to DPI scale
+                        
                         p.trail.forEach((pos, i) => {
-                            const size = (i / p.trail.length) * 6;
+                            const size = (i / p.trail.length) * 6 * scale;
                              if (i > p.trail.length - 5) {
                                 ctx.fillStyle = `rgba(255, ${100 + i*10}, 0, ${i/20})`;
                              } else {
@@ -2242,11 +2261,11 @@
 
                 } else if (p.type === 'beam') {
                     ctx.globalCompositeOperation = 'lighter'; 
-                    ctx.lineWidth = 8 * (p.duration - p.timer) / p.duration;
+                    ctx.lineWidth = (8 * scale) * (p.duration - p.timer) / p.duration;
                     ctx.lineCap = 'round';
                     ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.endX, p.endY); ctx.stroke();
                     ctx.strokeStyle = '#fff';
-                    ctx.lineWidth = 3 * (p.duration - p.timer) / p.duration;
+                    ctx.lineWidth = (3 * scale) * (p.duration - p.timer) / p.duration;
                     ctx.stroke();
                     ctx.globalCompositeOperation = 'source-over';
                 }
@@ -2262,8 +2281,6 @@
                     if (!isMobile) {
                         ctx.shadowBlur = 10; 
                         ctx.shadowColor = p.color;
-                    } else {
-                        ctx.shadowBlur = 0;
                     }
                     ctx.fillRect(p.x, p.y, p.size, p.size);
                 });
@@ -2275,7 +2292,8 @@
                 ctx.save();
                 ctx.globalAlpha = ft.opacity;
                 ctx.fillStyle = ft.color;
-                ctx.font = 'bold 16px Courier New';
+                // Responsive font size
+                ctx.font = `bold ${this.height/30}px Courier New`;
                 ctx.shadowBlur = 0;
                 ctx.fillText(ft.text, ft.x, ft.y);
                 ctx.restore();
@@ -2285,14 +2303,20 @@
                 let range, centerX, centerY;
                 
                 if (game.data.selectedTower) {
-                    range = game.data.selectedTower.config.range;
+                    range = game.data.selectedTower.range;
                     centerX = game.data.selectedTower.x;
                     centerY = game.data.selectedTower.y;
                 } else if (game.data.buildType || game.data.hoveredTower) {
                     const type = game.data.buildType || game.data.hoveredTower;
-                    range = TOWER_TYPES[type].range;
-                    centerX = game.mouse.x;
-                    centerY = game.mouse.y;
+                    // Calculate range based on current scale factor
+                    range = TOWER_TYPES[type].range * game.scaleFactor;
+                    
+                    // Snap mouse to grid for center
+                    const gs = game.gridSize;
+                    const gx = Math.floor(game.mouse.x / gs) * gs;
+                    const gy = Math.floor(game.mouse.y / gs) * gs;
+                    centerX = gx + gs/2;
+                    centerY = gy + gs/2;
                 }
 
                 const ctx = this.ctx;
@@ -2306,7 +2330,7 @@
                 }
 
                 if (game.data.buildType) {
-                    const gs = CONFIG.gridSize;
+                    const gs = game.gridSize;
                     const gx = Math.floor(game.mouse.x / gs) * gs;
                     const gy = Math.floor(game.mouse.y / gs) * gs;
                     
@@ -2323,12 +2347,13 @@
                 ctx.restore();
             }
 
-            drawBaseSpawn(map) { 
+            drawBaseSpawn(map, gs) { 
                  if(!map.screenWaypoints.length) return;
                  const s = map.screenWaypoints[0];
                  const b = map.screenWaypoints[map.screenWaypoints.length-1];
-                 this.ctx.fillStyle='#ff0055'; this.ctx.fillRect(s.x-10,s.y-10,20,20);
-                 this.ctx.fillStyle='#00ffaa'; this.ctx.beginPath(); this.ctx.arc(b.x,b.y,15,0,Math.PI*2); this.ctx.fill();
+                 const size = gs * 0.4;
+                 this.ctx.fillStyle='#ff0055'; this.ctx.fillRect(s.x-size/2,s.y-size/2,size,size);
+                 this.ctx.fillStyle='#00ffaa'; this.ctx.beginPath(); this.ctx.arc(b.x,b.y,size/2,0,Math.PI*2); this.ctx.fill();
             }
         }
 
@@ -2345,6 +2370,10 @@
                 this.wasAutoPaused = false;
                 this.isAdPlaying = false; 
                 
+                // Adaptive Grid Properties
+                this.gridSize = 40; // Default
+                this.scaleFactor = 1; // Default
+
                 this.data = {
                     money: CONFIG.player.startMoney,
                     hp: CONFIG.player.startHp,
@@ -2378,7 +2407,8 @@
                     Sound.init();
                     if(e.touches) {
                         this.updateMouse(e.touches[0]);
-                        e.preventDefault(); 
+                        // Prevent default scrolling only on canvas touches
+                        if (e.cancelable) e.preventDefault(); 
                     }
                     this.handleInput();
                 };
@@ -2429,7 +2459,7 @@
                 this.renderer.render(this, 0); 
             }
             
-            // === AD WRAPPERS ===
+            // ... (Ad wrappers remain unchanged) ...
             watchAd() {
                 Sound.play('ui_click');
                 AdManager.showRewarded(() => {
@@ -2480,20 +2510,14 @@
                 if (!ysdk) {
                     initYandexSDK();
                 }
-                
-                // === FIX: LOAD LEVEL FROM STORAGE ===
                 const savedLevel = localStorage.getItem('cyberpunk_td_level');
                 if (savedLevel) {
                     this.level = parseInt(savedLevel);
                 } else {
                     this.level = 1; 
                 }
-                
-                // Ensure map matches level (since map 0 is level 1, map 1 is level 2, etc.)
                 this.map.loadMap(this.level - 1);
-                
                 this.startLevelSession();
-                
                 document.getElementById('start-screen').classList.add('hidden');
                 document.body.classList.remove('in-menu');
                 this.showNotification(t('protocol_init'), "#00f3ff");
@@ -2544,10 +2568,7 @@
 
             nextLevel() {
                 this.level++;
-                
-                // === FIX: SAVE PROGRESS ===
                 localStorage.setItem('cyberpunk_td_level', this.level);
-                
                 this.map.nextMap();
                 this.resize();
                 this.startLevelSession();
@@ -2562,10 +2583,7 @@
 
             hardReset() {
                 this.level = 1;
-                
-                // === FIX: RESET SAVED PROGRESS ===
                 localStorage.setItem('cyberpunk_td_level', 1);
-                
                 this.map.loadMap(0);
                 this.resize();
                 this.startLevelSession();
@@ -2576,14 +2594,12 @@
                 this.state = 'MENU';
                 this.isAdPlaying = false; 
                 this.wasAutoPaused = false;
-                
                 document.body.classList.add('in-menu');
                 document.getElementById('start-screen').classList.remove('hidden');
                 document.getElementById('pause-screen').classList.add('hidden');
                 document.getElementById('game-over-screen').classList.add('hidden');
                 document.getElementById('victory-screen').classList.add('hidden');
                 document.getElementById('settings-screen').classList.add('hidden');
-                
                 this.enemies = [];
                 this.projectiles = [];
                 this.particles = [];
@@ -2633,23 +2649,32 @@
             }
 
             resize() {
+                // Get real window dimensions
                 const w = window.innerWidth;
                 const h = window.innerHeight;
-                this.renderer.resize(w, h);
-                this.map.resize(w, h);
+                const dpr = window.devicePixelRatio || 1;
+
+                // Adaptive Grid: Divide height by 12 for mobile-friendly vertical spacing
+                // On very wide screens, bound it by width to avoid tiny grids
+                const rows = 12;
+                this.gridSize = Math.floor(h / rows);
+                
+                // Recalculate global scale factor based on original design (40px grid)
+                this.scaleFactor = this.gridSize / 40;
+
+                // Propagate to Renderer and Map
+                this.renderer.resize(w, h, dpr);
+                this.map.resize(w, h, this.gridSize);
             }
 
             updateMouse(e) {
-                const rect = this.canvas.getBoundingClientRect();
-                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                // Get client coordinates directly (canvas covers screen)
+                const clientX = e.clientX;
+                const clientY = e.clientY;
                 
                 if (clientX !== undefined && clientY !== undefined) {
-                    const scaleX = this.canvas.width / rect.width;
-                    const scaleY = this.canvas.height / rect.height;
-                    
-                    this.mouse.x = (clientX - rect.left) * scaleX;
-                    this.mouse.y = (clientY - rect.top) * scaleY;
+                    this.mouse.x = clientX;
+                    this.mouse.y = clientY;
                 }
             }
 
@@ -2688,10 +2713,18 @@
             }
 
             handleInput() {
-                const gx = Math.floor(this.mouse.x / CONFIG.gridSize) * CONFIG.gridSize;
-                const gy = Math.floor(this.mouse.y / CONFIG.gridSize) * CONFIG.gridSize;
+                // Snap to dynamic grid
+                const gs = this.gridSize;
+                const gx = Math.floor(this.mouse.x / gs) * gs;
+                const gy = Math.floor(this.mouse.y / gs) * gs;
                 
-                const clickedTower = this.towers.find(tower => Math.abs(tower.x - (gx + CONFIG.gridSize/2)) < 5 && Math.abs(tower.y - (gy + CONFIG.gridSize/2)) < 5);
+                // Center hit test
+                const centerX = gx + gs/2;
+                const centerY = gy + gs/2;
+                
+                const clickedTower = this.towers.find(tower => 
+                    Math.abs(tower.x - centerX) < 5 && Math.abs(tower.y - centerY) < 5
+                );
 
                 if (clickedTower) {
                     this.selectTower(clickedTower);
@@ -2738,18 +2771,23 @@
                 const cost = TOWER_TYPES[type].cost;
                 if (this.data.money < cost) return;
 
+                // Bounds check
                 if (gx < 0 || gx >= this.renderer.width || gy < 0 || gy >= this.renderer.height) return;
 
-                if (this.map.isCellBlocked(gx, gy, CONFIG.gridSize) || 
-                    this.towers.some(tower => Math.abs(tower.x - (gx + CONFIG.gridSize/2)) < 5 && Math.abs(tower.y - (gy + CONFIG.gridSize/2)) < 5)) {
+                // Use center point for distance check
+                const centerX = gx + this.gridSize/2;
+                const centerY = gy + this.gridSize/2;
+
+                if (this.map.isCellBlocked(gx, gy, this.gridSize) || 
+                    this.towers.some(tower => Math.abs(tower.x - centerX) < 5 && Math.abs(tower.y - centerY) < 5)) {
                       Sound.play('error');
                       return;
                 }
 
                 Sound.play('build');
-                this.towers.push(new Tower(gx + CONFIG.gridSize/2, gy + CONFIG.gridSize/2, type));
+                this.towers.push(new Tower(centerX, centerY, type));
                 this.data.money -= cost;
-                this.spawnParticles(gx + CONFIG.gridSize/2, gy + CONFIG.gridSize/2, '#00f3ff', 10, 'spark');
+                this.spawnParticles(centerX, centerY, '#00f3ff', 10, 'spark');
                 this.floatingTexts.push(new FloatingText(gx + 20, gy, `-${cost}`, '#ff0055'));
                 
                 this.data.buildType = null; 
@@ -2771,7 +2809,8 @@
                 if (this.passiveIncomeTimer >= 1000) {
                     this.passiveIncomeTimer = 0;
                     this.data.money += 3;
-                    this.floatingTexts.push(new FloatingText(this.renderer.width / 2, 70, "+3", "#ffd700"));
+                    const w = this.renderer.width;
+                    this.floatingTexts.push(new FloatingText(w / 2, 70, "+3", "#ffd700"));
                     this.updateUI();
                 }
 
