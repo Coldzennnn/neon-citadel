@@ -22,16 +22,10 @@
             font-family: 'Courier New', monospace;
             height: 100vh;
             width: 100vw;
-            
             user-select: none;
             -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            
             touch-action: none; 
             overscroll-behavior: none;
-            
-            -webkit-touch-callout: none; 
             -webkit-tap-highlight-color: transparent; 
         }
 
@@ -51,11 +45,10 @@
             display: block;
             width: 100%;
             height: 100%;
-            /* High contrast for cyberpunk feel */
             filter: contrast(1.1) brightness(1.1); 
         }
 
-        /* === ROTATE MESSAGE (MOBILE) === */
+        /* === ROTATE MESSAGE (MOBILE PORTRAIT ONLY) === */
         #rotate-message {
             display: none;
             position: fixed;
@@ -77,9 +70,10 @@
             animation: pulse 1s infinite;
         }
 
-        /* Only show rotate message on portrait phones */
-        @media screen and (orientation: portrait) and (max-width: 768px) {
+        /* Показываем сообщение только если телефон держится вертикально */
+        @media screen and (orientation: portrait) {
             #rotate-message { display: flex; }
+            #ui-layer { display: none; } /* Скрываем интерфейс в вертикальном режиме */
         }
 
         /* === UI LAYER === */
@@ -130,9 +124,7 @@
             font-size: 1.2vh;
             color: #00f3ff;
             opacity: 0.7;
-            letter-spacing: 1px;
             text-transform: uppercase;
-            margin-bottom: 2px;
         }
 
         .stat-value {
@@ -149,7 +141,7 @@
         /* === HUD CONTROLS === */
         .hud-controls {
             position: absolute;
-            top: 9vh;
+            top: 10vh;
             right: 10px;
             display: flex;
             flex-direction: column;
@@ -175,11 +167,7 @@
             cursor: pointer;
             backdrop-filter: blur(4px);
             box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-            transition: all 0.2s;
         }
-
-        .control-btn:hover { background: #00f3ff; color: #000; transform: scale(1.1); }
-        .control-btn:active { transform: scale(0.9); }
 
         /* === TOOLBARS === */
         .toolbar-container {
@@ -199,7 +187,6 @@
             border: 1px solid rgba(0, 243, 255, 0.4);
             border-radius: 12px;
             backdrop-filter: blur(8px);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             align-items: center;
             justify-content: center;
         }
@@ -222,13 +209,10 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .build-btn:hover { background: rgba(0, 243, 255, 0.1); border-color: #00f3ff; transform: translateY(-2px); }
-        .build-btn:active { transform: scale(0.95); }
         .build-btn.selected { background: rgba(0, 60, 80, 0.8); border-color: #fff; box-shadow: 0 0 10px #00f3ff; }
-        .build-btn.disabled { opacity: 0.4; filter: grayscale(1); cursor: not-allowed; }
+        .build-btn.disabled { opacity: 0.4; filter: grayscale(1); }
         .build-btn.error { animation: shake 0.3s ease-in-out; }
 
         .btn-icon { font-size: 3vh; margin-bottom: 4px; text-shadow: 0 0 5px currentColor; }
@@ -242,10 +226,7 @@
             color: #ff00ff;
             min-width: 9vh;
         }
-        .reward-btn:hover { background: rgba(255, 0, 255, 0.2); border-color: #fff; }
-        .reward-icon { font-size: 3vh; margin-bottom: 2px; }
-        .reward-btn .btn-name { font-size: 1vh; color: #ffaaff; }
-        .reward-btn .btn-cost { color: #00ff00; font-size: 1.2vh; }
+        .reward-icon { font-size: 3vh; }
 
         /* Inspect / Sell Menu Styles */
         .inspect-info {
@@ -265,19 +246,15 @@
             padding: 1vh 2vw;
             border-radius: 6px;
             cursor: pointer;
-            font-family: inherit;
             font-weight: bold;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: all 0.2s;
             min-width: 100px;
             min-height: 48px;
             justify-content: center;
         }
-        .sell-btn:hover { background: rgba(255, 0, 85, 0.2); box-shadow: 0 0 15px rgba(255, 0, 85, 0.4); transform: translateY(-2px); color: #fff; }
-        .sell-btn:active { transform: scale(0.95); }
-        .sell-label { font-size: 1.8vh; letter-spacing: 1px; }
+        .sell-label { font-size: 1.8vh; }
         .sell-value { font-size: 1.5vh; margin-top: 4px; color: #fff; }
 
         @keyframes shake {
@@ -289,14 +266,11 @@
         /* === NOTIFICATIONS === */
         #center-notification {
             position: absolute;
-            top: 40%;
-            left: 50%;
+            top: 40%; left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
             font-size: 5vh;
             font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 4px;
             color: #fff;
             text-shadow: 0 0 20px rgba(255,255,255,0.5);
             opacity: 0;
@@ -322,118 +296,120 @@
             padding: 20px;
         }
         .hidden { display: none !important; }
-        h1 { font-size: 6vh; margin-bottom: 2vh; letter-spacing: 3px; text-shadow: 0 0 15px currentColor; }
-        .subtitle { font-size: 2.5vh; color: #888; margin-bottom: 5vh; letter-spacing: 2px; }
+        h1 { font-size: 6vh; margin-bottom: 2vh; text-shadow: 0 0 15px currentColor; }
+        .subtitle { font-size: 2.5vh; color: #888; margin-bottom: 5vh; }
         
         button.action-btn {
             background: transparent; color: #00f3ff; border: 2px solid #00f3ff;
             padding: 2vh 4vw; font-family: inherit; font-size: 3vh; font-weight: bold;
-            cursor: pointer; text-transform: uppercase; transition: all 0.2s; margin-top: 2vh;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+            cursor: pointer; text-transform: uppercase; margin-top: 2vh;
             min-width: 250px;
         }
-        button.action-btn:hover { background: #00f3ff; color: #000; box-shadow: 0 0 30px #00f3ff; }
-        
-        button.action-btn.danger { color: #ff0055; border-color: #ff0055; }
-        button.action-btn.danger:hover { background: #ff0055; color: white; }
-        
         button.reset-btn {
             background: transparent; color: #555; border: 1px solid #555;
             padding: 1.5vh 3vw; font-family: inherit; font-size: 1.8vh;
-            cursor: pointer; text-transform: uppercase; transition: all 0.2s; margin-top: 10px;
+            cursor: pointer; text-transform: uppercase; margin-top: 10px;
         }
-        button.reset-btn:hover { color: #fff; border-color: #fff; }
 
-        /* Lang Button Specifics */
+        /* Lang Button */
         .lang-switch {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 44px;
-            height: 44px;
+            position: absolute; top: 20px; right: 20px;
+            width: 44px; height: 44px;
             background: rgba(0, 0, 0, 0.6);
             border: 1px solid #fff;
             color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-weight: bold;
-            z-index: 2001;
-            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-weight: bold; z-index: 2001; border-radius: 50%;
         }
-        .lang-switch:hover { background: #fff; color: #000; }
 
-        /* Score display on end screens */
-        .score-display {
-            font-size: 4vh;
-            color: #ffd700;
-            margin: 2vh 0;
-            text-shadow: 0 0 10px #ffd700;
-        }
+        /* Score display */
+        .score-display { font-size: 4vh; color: #ffd700; margin: 2vh 0; }
         .score-label { color: #888; font-size: 2.5vh; }
 
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-        
-        .glitch-text {
-            animation: glitch 0.3s ease-in-out infinite;
-        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes glitch { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+        .glitch-text { animation: glitch 0.3s ease-in-out infinite; }
 
-        /* === ИСПРАВЛЕНИЕ ДЛЯ МОБИЛЬНЫХ (ВСТАВИТЬ В КОНЕЦ STYLE) === */
+        /* ========================================= */
+        /* === АГРЕССИВНОЕ ИСПРАВЛЕНИЕ ДЛЯ ТЕЛЕФОНОВ === */
+        /* ========================================= */
+        
+        /* Срабатывает, если высота экрана маленькая (горизонтальный телефон) */
         @media screen and (max-height: 500px) and (orientation: landscape) {
-            /* 1. Уменьшаем верхнюю панель */
-            .hud-top { height: 12vh; padding: 0 1vw; }
-            .stat-value { font-size: 14px; }
-            .stat-label { font-size: 8px; }
+            
+            /* 1. Верхняя панель: Делаем супер-узкой */
+            .hud-top {
+                height: 35px; /* Фиксированные пиксели, не проценты! */
+                padding: 0 10px;
+            }
+            .stat-value { font-size: 14px; text-shadow: none; }
+            .stat-label { display: none; /* Скрываем слова Level, Credits, чтобы не занимали место */ }
+            .stat-box { margin: 0 10px; flex-direction: row; gap: 5px; }
+            /* Добавляем иконки вместо текста через псевдоэлементы, если нужно, или просто оставляем цифры */
 
-            /* 2. Уменьшаем правые кнопки (меню, звук) */
+            /* 2. Правые кнопки: Убираем из столбика справа, ставим в ряд сверху */
             .hud-controls {
-                top: 15vh; /* Чуть ниже */
-                right: 5px;
-                gap: 5px;
+                top: 40px; /* Сразу под верхней панелью */
+                right: 10px;
+                flex-direction: row; /* В ряд! */
+                gap: 8px;
             }
             .control-btn {
-                width: 35px; /* Фиксированный размер вместо vh */
-                height: 35px;
-                min-width: 30px;
-                min-height: 30px;
-                font-size: 14px;
+                width: 28px;
+                height: 28px;
+                min-width: 28px;
+                min-height: 28px;
+                font-size: 10px;
+                background: rgba(0, 0, 0, 0.3); /* Более прозрачные */
             }
 
-            /* 3. Уменьшаем нижнее меню башен */
+            /* 3. Нижнее меню: Делаем прозрачным и маленьким */
+            .toolbar-container {
+                padding-bottom: 2px;
+                width: auto;
+            }
             .menu-panel {
                 padding: 2px 5px;
-                bottom: 5px;
+                border-radius: 8px;
+                background: rgba(0, 0, 0, 0.4); /* Прозрачный фон, чтобы видеть врагов */
+                border: 1px solid rgba(0, 243, 255, 0.2);
+                gap: 4px;
             }
+
+            /* 4. Кнопки башен: Крошечные, БЕЗ текста */
             .build-btn {
-                width: 45px; /* Делаем кнопки компактнее */
-                height: 45px;
-                min-width: 40px; 
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
                 min-height: 40px;
+                margin: 0 2px;
             }
-            .btn-icon { font-size: 18px; margin-bottom: 0; }
-            .btn-name { font-size: 8px; display: none; /* Скрываем названия на телефоне, чтобы влезло */ }
-            .btn-cost { font-size: 9px; margin-top: 0; }
-            
-            /* Кнопка рекламы (фикс эмодзи) */
-            .reward-icon { font-size: 18px; text-shadow: none; /* Убираем тень, чтобы не двоилось */ }
-            
-            /* Поднимаем уведомления, чтобы не закрывали центр */
-            #center-notification { font-size: 6vh; top: 30%; }
+            .btn-icon { font-size: 16px; margin-bottom: 0; text-shadow: none; }
+            .btn-name { display: none !important; /* СКРЫВАЕМ НАЗВАНИЯ */ }
+            .btn-cost { font-size: 9px; margin-top: 0; color: #fff; }
+
+            /* 5. Кнопка рекламы */
+            .reward-btn { min-width: 40px; }
+            #lbl-ad-text { display: none !important; }
+            .reward-icon { font-size: 16px; margin: 0; text-shadow: none; }
+
+            /* 6. Меню продажи (инспект) */
+            .inspect-info { min-width: 60px; margin-right: 5px; }
+            .inspect-title { font-size: 10px; }
+            .inspect-stat { font-size: 10px; }
+            .sell-btn { 
+                min-width: 50px; 
+                min-height: 35px; 
+                padding: 2px; 
+            }
+            .sell-label { font-size: 10px; }
+            .sell-value { font-size: 10px; margin-top: 0; }
+
+            /* 7. Уведомление по центру - выше */
+            #center-notification {
+                font-size: 24px;
+                top: 20%;
+            }
         }
     </style>
 </head>
