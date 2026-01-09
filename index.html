@@ -247,21 +247,25 @@
         /* FIX: Remove shadow from emoji to prevent double vision */
         .reward-icon { font-size: 24px; margin-bottom: 0; text-shadow: none; }
 
-        /* Inspect / Sell Menu Styles */
+        /* Inspect / Sell / Upgrade Menu Styles */
         .inspect-info {
             display: flex;
             flex-direction: column;
-            margin-right: 20px;
+            margin-right: 15px;
             color: #fff;
-            min-width: 120px;
+            min-width: 100px;
         }
-        .inspect-title { font-size: 18px; font-weight: bold; color: #00f3ff; margin-bottom: 4px; text-transform: uppercase; }
-        .inspect-stat { font-size: 14px; color: #aaa; }
+        .inspect-title { font-size: 16px; font-weight: bold; color: #00f3ff; margin-bottom: 2px; text-transform: uppercase; }
+        .inspect-stat { font-size: 12px; color: #aaa; }
+        .inspect-actions {
+            display: flex;
+            gap: 5px;
+        }
 
-        .sell-btn {
-            background: linear-gradient(135deg, rgba(60,0,0,0.8), rgba(30,0,0,0.9));
-            border: 1px solid #ff0055;
-            color: #ff0055;
+        .action-icon-btn {
+            background: linear-gradient(135deg, rgba(0,60,0,0.8), rgba(0,30,0,0.9));
+            border: 1px solid #00ffaa;
+            color: #00ffaa;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
@@ -269,11 +273,18 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 80px;
+            width: 70px;
             height: 55px;
         }
-        .sell-label { font-size: 14px; }
-        .sell-value { font-size: 12px; color: #fff; margin-top: 2px; }
+        .action-icon-btn.sell {
+            background: linear-gradient(135deg, rgba(60,0,0,0.8), rgba(30,0,0,0.9));
+            border: 1px solid #ff0055;
+            color: #ff0055;
+        }
+        .action-icon-btn.disabled { opacity: 0.5; filter: grayscale(1); border-color: #555; color: #555; }
+        .action-label { font-size: 10px; text-transform: uppercase; }
+        .action-value { font-size: 12px; color: #fff; margin-top: 2px; font-weight: bold; }
+        .action-icon { font-size: 18px; margin-bottom: 0; text-shadow: none; }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -381,8 +392,6 @@
             </div>
 
             <div class="hud-controls">
-                <div class="control-btn" onclick="game.openSettings(true)" id="btn-settings-hud">⚙️</div>
-                <!-- Sound button removed from HUD to simplify, accessible in settings if needed, or keep if preferred. Instructions said "remove extra settings button", typically meaning duplicates. Leaving only ONE gear. -->
                 <div class="control-btn" onclick="game.togglePause()" id="btn-pause">⏸</div>
             </div>
         </div>
@@ -417,7 +426,7 @@
                      id="btn-railgun">
                     <div class="btn-icon" style="color:#00f3ff">━╋━</div>
                     <div class="btn-name" id="name-railgun">RAILGUN</div>
-                    <div class="btn-cost">220</div>
+                    <div class="btn-cost">200</div>
                 </div>
                 <div class="build-btn" 
                      onclick="game.trySelectTower('missile')" 
@@ -426,7 +435,7 @@
                      id="btn-missile">
                     <div class="btn-icon" style="color:#ff6600">▲</div>
                     <div class="btn-name" id="name-missile">MISSILE</div>
-                    <div class="btn-cost">275</div>
+                    <div class="btn-cost">250</div>
                 </div>
                 <div class="build-btn" 
                      onclick="game.trySelectTower('cryo')"
@@ -435,7 +444,7 @@
                      id="btn-cryo">
                     <div class="btn-icon" style="color:#00ffff">❄</div>
                     <div class="btn-name" id="name-cryo">CRYO</div>
-                    <div class="btn-cost">150</div>
+                    <div class="btn-cost">130</div>
                 </div>
             </div>
 
@@ -443,11 +452,20 @@
             <div id="inspect-menu" class="menu-panel hidden-menu">
                 <div class="inspect-info">
                     <div class="inspect-title" id="inspect-name">TOWER</div>
+                    <div class="inspect-stat" id="inspect-level">LVL: 1</div>
                     <div class="inspect-stat" id="inspect-damage">DMG: 0</div>
                 </div>
-                <div class="sell-btn" onclick="game.sellTower()">
-                    <span class="sell-label" id="btn-sell">SELL</span>
-                    <span class="sell-value" id="sell-value">+0</span>
+                <div class="inspect-actions">
+                    <div class="action-icon-btn" onclick="game.upgradeTower()" id="btn-upgrade">
+                        <div class="action-icon">⬆️</div>
+                        <span class="action-label" id="lbl-upgrade">UPGR</span>
+                        <span class="action-value" id="upgrade-cost">100</span>
+                    </div>
+                    <div class="action-icon-btn sell" onclick="game.sellTower()">
+                        <div class="action-icon">💲</div>
+                        <span class="action-label" id="btn-sell">SELL</span>
+                        <span class="action-value" id="sell-value">+0</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -518,10 +536,10 @@
             sound: { ru: 'ЗВУК', en: 'SOUND' },
             on: { ru: 'ВКЛ', en: 'ON' },
             off: { ru: 'ВЫКЛ', en: 'OFF' },
-            level: { ru: 'УРОВЕНЬ', en: 'LEVEL' }, /* FIXED */
-            system: { ru: 'СИСТЕМА', en: 'SYSTEM' }, /* FIXED */
-            credits: { ru: 'КРЕДИТЫ', en: 'CREDITS' }, /* FIXED */
-            wave: { ru: 'ВОЛНА', en: 'WAVE' }, /* FIXED */
+            level: { ru: 'УРОВЕНЬ', en: 'LEVEL' },
+            system: { ru: 'СИСТЕМА', en: 'SYSTEM' },
+            credits: { ru: 'КРЕДИТЫ', en: 'CREDITS' },
+            wave: { ru: 'ВОЛНА', en: 'WAVE' },
             paused: { ru: 'ПАУЗА', en: 'PAUSED' },
             resume: { ru: 'ПРОДОЛЖИТЬ', en: 'RESUME' },
             reset_level: { ru: 'СБРОС УРОВНЯ', en: 'RESET LEVEL' },
@@ -533,6 +551,9 @@
             next_level: { ru: 'ДАЛЕЕ', en: 'NEXT' },
             warning: { ru: 'ВТОРЖЕНИЕ!', en: 'INTRUSION!' },
             sell: { ru: 'ПРОДАТЬ', en: 'SELL' },
+            upgrade: { ru: 'УЛУЧШИТЬ', en: 'UPGRADE' },
+            max_level: { ru: 'МАКС', en: 'MAX' },
+            level_short: { ru: 'УР.', en: 'LVL' },
             dmg: { ru: 'УРОН: ', en: 'DMG: ' },
             protocol_init: { ru: 'ЗАПУСК...', en: 'INIT...' },
             breach: { ru: 'ПРОБОЙ!', en: 'BREACH!' },
@@ -578,6 +599,7 @@
                 'lbl-credits': 'credits',
                 'lbl-wave': 'wave',
                 'btn-sell': 'sell',
+                'lbl-upgrade': 'upgrade',
                 'title-pause': 'paused',
                 'btn-resume': 'resume',
                 'btn-reset-progress': 'reset_level',
@@ -607,7 +629,7 @@
             const btns = document.querySelectorAll('.lang-btn');
             btns.forEach(b => b.innerText = currentLang.toUpperCase());
             
-            if(window.game) window.game.updateSettingsText();
+            if(window.game) window.game.updateUI();
         }
         
         function toggleLanguage() {
@@ -615,7 +637,7 @@
             currentLang = currentLang === 'ru' ? 'en' : 'ru';
             localStorage.setItem('cyberpunk_td_lang', currentLang);
             applyTranslations();
-            if (window.game) window.game.updateUI();
+            if (window.game) window.game.updateSettingsText();
         }
 
         /** === YANDEX SDK === */
@@ -847,35 +869,36 @@
             maxWaves: 10
         };
 
+        // BALANCE UPDATE
         const TOWER_TYPES = {
             gatling: { 
                 id: 'gatling', name: 'tower_gatling', 
-                cost: 60, range: 120, damage: 10, cooldown: 166, 
+                cost: 60, range: 120, damage: 12, cooldown: 150, 
                 color: '#ffcc00', projectileSpeed: 450, type: 'projectile' 
             },
             missile: {
                 id: 'missile', name: 'tower_missile',
-                cost: 275, range: 200, damage: 60, cooldown: 1800,
-                color: '#ff6600', projectileSpeed: 600, type: 'missile', blastRadius: 60
+                cost: 250, range: 180, damage: 50, cooldown: 1600,
+                color: '#ff6600', projectileSpeed: 600, type: 'missile', blastRadius: 70
             },
             railgun: { 
                 id: 'railgun', name: 'tower_railgun', 
-                cost: 220, range: 350, damage: 150, cooldown: 2000, 
+                cost: 200, range: 350, damage: 180, cooldown: 2200, 
                 color: '#00f3ff', type: 'instant' 
             },
             cryo: { 
                 id: 'cryo', name: 'tower_cryo', 
-                cost: 150, range: 160, damage: 5, cooldown: 300, 
+                cost: 130, range: 110, damage: 8, cooldown: 350, 
                 color: '#00ffff', projectileSpeed: 400, type: 'projectile', effect: 'freeze'
             }
         };
 
+        // ENEMY UPDATE
         const ENEMY_TYPES = {
-            kiddie: { hp: 40, speed: 210, reward: 5, color: '#39ff14', radius: 8, type: 'RUNNER' },
-            brute: { hp: 180, speed: 132, reward: 15, color: '#ff3300', radius: 14, type: 'HEAVY' }, 
-            virus: { hp: 1000, speed: 78, reward: 10, color: '#bc13fe', radius: 12, regen: 8, type: 'BOSS' },
-            healer: { hp: 80, speed: 120, reward: 12, color: '#ffffff', radius: 10, type: 'HEALER' },
-            shifter: { hp: 120, speed: 150, reward: 10, color: '#9400d3', radius: 9, type: 'SHIFTER' }
+            kiddie: { hp: 35, speed: 220, reward: 5, color: '#39ff14', radius: 8, type: 'RUNNER' },
+            brute: { hp: 200, speed: 110, reward: 18, color: '#ff3300', radius: 14, type: 'HEAVY' }, 
+            virus: { hp: 1200, speed: 70, reward: 50, color: '#bc13fe', radius: 12, regen: 10, type: 'BOSS' },
+            shifter: { hp: 90, speed: 180, reward: 12, color: '#9400d3', radius: 9, type: 'SHIFTER' }
         };
 
         /** === UTILS === */
@@ -925,7 +948,6 @@
         /** === GAME CLASSES === */
         class GameMap {
             constructor() {
-                // FIXED: Margins are now class properties for global access
                 this.topMargin = 80;
                 this.bottomMargin = 100;
                 
@@ -958,7 +980,6 @@
 
             resize(width, height, gridSize) {
                 this.pathWidth = gridSize * 1.5;
-                // FIXED: Explicit usage of properties
                 const safeHeight = height - this.topMargin - this.bottomMargin;
                 
                 this.screenWaypoints = this.waypoints.map(p => ({ 
@@ -986,7 +1007,8 @@
                 this.enemyType = config.type; 
                 const s = window.game ? window.game.scaleFactor : 1;
 
-                const hpMult = Math.pow(1.2, waveNum - 1);
+                // SCALING UPDATE: +15% HP per wave
+                const hpMult = Math.pow(1.15, waveNum - 1);
                 const speedMult = Math.min(2.0, 1 + (Math.floor((waveNum - 1) / 5) * 0.05));
 
                 this.maxHp = Math.floor(config.hp * hpMult);
@@ -996,6 +1018,8 @@
                 this.reward = config.reward;
                 this.color = config.color;
                 this.radius = config.radius * s;
+                this.regenRate = config.regen || 0;
+                this.regenTimer = 0;
                 
                 this.path = path;
                 this.pathIndex = 0;
@@ -1018,6 +1042,15 @@
                 if (this.enemyType === 'RUNNER') {
                     this.trail.push({x: this.x, y: this.y});
                     if (this.trail.length > 8) this.trail.shift();
+                }
+
+                // Regen logic
+                if (this.regenRate > 0 && this.hp < this.maxHp) {
+                    this.regenTimer += dt;
+                    if (this.regenTimer >= 1000) {
+                        this.hp = Math.min(this.maxHp, this.hp + this.regenRate);
+                        this.regenTimer = 0;
+                    }
                 }
 
                 if (this.freezeTimer > 0) {
@@ -1082,8 +1115,15 @@
                     const dx = this.target.x - this.x; const dy = this.target.y - this.y;
                     const dist = Math.hypot(dx, dy); const step = this.speed * (dt / 1000);
                     if (dist <= step) {
+                        // Shifter logic
+                        if (this.target.enemyType === 'SHIFTER' && Math.random() < 0.25) {
+                             // Miss
+                             this.active = false;
+                             return { hit: false }; // Missed visual could be added here
+                        }
+
                         this.target.takeDamage(this.damage);
-                        if (this.effect === 'freeze') this.target.applyFreeze(2000);
+                        if (this.effect === 'freeze') this.target.applyFreeze(2500);
                         this.active = false;
                         return { hit: true, x: this.x, y: this.y };
                     } else {
@@ -1129,12 +1169,51 @@
             constructor(x, y, type) {
                 this.x = x; this.y = y; this.type = type; this.config = TOWER_TYPES[type];
                 this.angle = 0; this.cooldownTimer = 0; this.muzzleFlashTimer = 0;
+                this.level = 1;
+                this.investment = this.config.cost;
                 
+                this.updateStats();
+            }
+
+            updateStats() {
                 const s = window.game ? window.game.scaleFactor : 1;
-                this.range = this.config.range * s;
+                
+                // Base stats
+                let rangeMult = 1;
+                let damageMult = 1;
+                let cooldownDiv = 1;
+
+                if (this.level === 2) {
+                    damageMult = 1.4;
+                    rangeMult = 1.15;
+                    cooldownDiv = 1.2;
+                } else if (this.level === 3) {
+                    damageMult = 2.0;
+                    rangeMult = 1.3;
+                    cooldownDiv = 1.4;
+                }
+
+                this.range = this.config.range * s * rangeMult;
+                this.damage = Math.floor(this.config.damage * damageMult);
+                this.cooldown = this.config.cooldown / cooldownDiv;
+                
                 this.projectileSpeed = this.config.projectileSpeed * s;
                 this.blastRadius = (this.config.blastRadius || 0) * s;
             }
+
+            upgrade() {
+                if (this.level >= 3) return false;
+                this.level++;
+                this.updateStats();
+                return true;
+            }
+
+            getUpgradeCost() {
+                if (this.level === 1) return Math.floor(this.config.cost * 0.6);
+                if (this.level === 2) return Math.floor(this.config.cost * 1.0);
+                return 0;
+            }
+
             update(dt, enemies, game) {
                 if (this.cooldownTimer > 0) this.cooldownTimer -= dt;
                 if (this.muzzleFlashTimer > 0) this.muzzleFlashTimer -= dt;
@@ -1155,7 +1234,7 @@
                     this.angle = Math.atan2(dy, dx);
                     if (this.cooldownTimer <= 0) {
                         this.shoot(target, game);
-                        this.cooldownTimer = this.config.cooldown;
+                        this.cooldownTimer = this.cooldown;
                         this.muzzleFlashTimer = 50;
                     }
                 }
@@ -1163,14 +1242,14 @@
             shoot(target, game) {
                 if (this.config.type === 'projectile') {
                     game.addProjectile(new Projectile({
-                        x: this.x, y: this.y, target: target, damage: this.config.damage, 
+                        x: this.x, y: this.y, target: target, damage: this.damage, 
                         speed: this.projectileSpeed, 
                         color: this.config.color, type: 'bullet', effect: this.config.effect
                     }));
                     if (this.type === 'cryo') Sound.play('shot_cryo');
                     else if(Math.random() > 0.7) Sound.play('shot_gatling');
                 } else if (this.config.type === 'instant') {
-                    target.takeDamage(this.config.damage);
+                    target.takeDamage(this.damage);
                     game.addProjectile(new Projectile({ x: this.x, y: this.y, target: target, color: this.config.color, type: 'beam' }));
                     Sound.play('shot_railgun');
                     game.addShake(5);
@@ -1179,7 +1258,7 @@
                     game.addProjectile(new Projectile({
                         x: this.x, y: this.y, target: target,
                         targetX: target.x, targetY: target.y,
-                        damage: this.config.damage, 
+                        damage: this.damage, 
                         speed: this.projectileSpeed,
                         color: this.config.color, type: 'missile', 
                         blastRadius: this.blastRadius 
@@ -1229,7 +1308,6 @@
 
                         this.waveNum++;
                         Sound.play('wave_complete');
-                        /* FIXED: Wave text now uses correct localization */
                         this.game.showNotification(`${t('wave')} ${this.waveNum - 1} ${t('wave_cleared')}`, "#00ffaa");
                         this.game.data.wave = this.waveNum;
                         this.game.updateUI();
@@ -1243,14 +1321,16 @@
                 this.spawning = true;
                 Sound.play('wave_start');
                 this.game.showNotification(`${t('wave')} ${this.waveNum} ${t('wave_incoming')}`, "#ff0055");
-                const count = 3 + Math.floor(this.waveNum * 1.5);
+                
+                // SCALING UPDATE: +2 enemies per wave
+                const count = 3 + (this.waveNum * 2);
+                
                 for(let i=0; i<count; i++) {
                     let type = 'kiddie';
                     const rand = Math.random();
                     if (this.waveNum >= 2 && rand > 0.6) type = 'brute';
                     if (this.waveNum >= 3 && rand > 0.85) type = 'virus';
                     if (this.game.level >= 4 && this.waveNum > 2) {
-                        if (rand > 0.9) type = 'healer';
                         if (rand < 0.1) type = 'shifter';
                     }
                     this.queue.push(type);
@@ -1320,9 +1400,7 @@
                 ctx.strokeStyle = CONFIG.colors.grid;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                // FIXED: Draw vertical lines across full height
                 for (let x=0; x<this.width; x+=gs) { ctx.moveTo(x,0); ctx.lineTo(x,this.height); }
-                // FIXED: Draw horizontal lines ONLY within safe area
                 for (let y=map.topMargin; y <= this.height - map.bottomMargin; y+=gs) { ctx.moveTo(0,y); ctx.lineTo(this.width,y); }
                 ctx.stroke();
                 
@@ -1421,12 +1499,6 @@
                     ctx.arc(0, 0, size * 1.5, 0, Math.PI * 2);
                     ctx.stroke();
                 } 
-                else if (e.enemyType === 'HEALER') {
-                    const s = size * 1.2;
-                    ctx.fillStyle = '#ccffcc';
-                    ctx.fillRect(-s/2, -s/6, s, s/3);
-                    ctx.fillRect(-s/6, -s/2, s/3, s);
-                }
                 else if (e.enemyType === 'SHIFTER') {
                     ctx.rotate(this.time * 0.003);
                     ctx.beginPath();
@@ -1445,6 +1517,25 @@
                 ctx.save();
                 ctx.translate(tower.x, tower.y);
                 const scale = gs / 40; 
+
+                // Upgrade Indicators
+                if (tower.level > 1) {
+                    ctx.save();
+                    // Lvl 2 = Green, Lvl 3 = Purple/Gold
+                    ctx.strokeStyle = tower.level === 2 ? '#00ffaa' : '#bc13fe';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(0,0, (16 * scale) + 4, 0, Math.PI*2);
+                    ctx.stroke();
+                    
+                    // Stars
+                    ctx.fillStyle = tower.level === 2 ? '#00ffaa' : '#bc13fe';
+                    ctx.beginPath();
+                    ctx.arc(0, -22 * scale, 3 * scale, 0, Math.PI*2); // Star 1
+                    if(tower.level === 3) ctx.arc(0, 22 * scale, 3 * scale, 0, Math.PI*2); // Star 2
+                    ctx.fill();
+                    ctx.restore();
+                }
 
                 if (isSelected) {
                     ctx.save();
@@ -1907,23 +1998,10 @@
                 this.floatingTexts = [];
             }
 
-            openSettings(fromGame = false) {
+            openSettings() {
                 Sound.play('ui_click');
-                if (fromGame) {
-                    this.previousState = this.state; 
-                    this.state = 'SETTINGS';
-                    // Pause game if it was playing
-                    if (this.previousState === 'PLAYING') {
-                        this.state = 'PAUSED'; 
-                        // Note: we don't show pause screen here, we show settings.
-                        // But when closing settings, we should go to PAUSED state screen.
-                        this.previousState = 'PAUSED'; 
-                    }
-                    document.getElementById('pause-screen').classList.add('hidden');
-                } else {
-                    this.previousState = 'MENU';
-                    document.getElementById('start-screen').classList.add('hidden');
-                }
+                this.previousState = 'MENU';
+                document.getElementById('start-screen').classList.add('hidden');
                 
                 this.state = 'SETTINGS';
                 document.getElementById('settings-screen').classList.remove('hidden');
@@ -1934,14 +2012,9 @@
                 Sound.play('ui_click');
                 document.getElementById('settings-screen').classList.add('hidden');
                 
-                if (this.previousState === 'MENU') {
-                    this.state = 'MENU';
-                    document.getElementById('start-screen').classList.remove('hidden');
-                } else {
-                    // Return to game (paused)
-                    this.state = 'PAUSED';
-                    document.getElementById('pause-screen').classList.remove('hidden');
-                }
+                // Always return to MENU as settings is only accessible from there now
+                this.state = 'MENU';
+                document.getElementById('start-screen').classList.remove('hidden');
             }
 
             toggleSoundSettings() {
@@ -2087,7 +2160,8 @@
             sellTower() {
                 if (!this.data.selectedTower) return;
                 const tower = this.data.selectedTower;
-                const refund = Math.floor(tower.config.cost * 0.7);
+                // Return 70% of total investment
+                const refund = Math.floor(tower.investment * 0.7);
                 
                 this.data.money += refund;
                 this.spawnParticles(tower.x, tower.y, tower.config.color, 20, 'explosion');
@@ -2096,6 +2170,27 @@
                 this.towers = this.towers.filter(t => t !== tower);
                 this.deselect();
                 Sound.play('sell'); 
+            }
+
+            upgradeTower() {
+                const tower = this.data.selectedTower;
+                if (!tower || tower.level >= 3) return;
+
+                const cost = tower.getUpgradeCost();
+                if (this.data.money < cost) {
+                    Sound.play('error');
+                    this.showNotification(t('insufficient_funds'), '#ff0055');
+                    return;
+                }
+
+                this.data.money -= cost;
+                tower.investment += cost;
+                tower.upgrade();
+                Sound.play('build');
+                this.spawnParticles(tower.x, tower.y, '#00ff00', 15, 'spark');
+                this.floatingTexts.push(new FloatingText(tower.x, tower.y, `LVL ${tower.level}`, '#00ffaa'));
+                
+                this.updateUI();
             }
 
             buildTower(gx, gy) {
@@ -2232,8 +2327,27 @@
                     
                     const selectedTower = this.data.selectedTower;
                     document.getElementById('inspect-name').innerText = t(selectedTower.config.name);
-                    document.getElementById('inspect-damage').innerText = `${t('dmg')}${selectedTower.config.damage}`;
-                    document.getElementById('sell-value').innerText = `+${Math.floor(selectedTower.config.cost * 0.7)}`;
+                    document.getElementById('inspect-level').innerText = `${t('level_short')} ${selectedTower.level}`;
+                    document.getElementById('inspect-damage').innerText = `${t('dmg')}${selectedTower.damage}`;
+                    
+                    // Update Upgrade Button UI
+                    const upgradeBtn = document.getElementById('btn-upgrade');
+                    const upgradeCostEl = document.getElementById('upgrade-cost');
+                    
+                    if (selectedTower.level >= 3) {
+                        upgradeCostEl.innerText = t('max_level');
+                        upgradeBtn.classList.add('disabled');
+                    } else {
+                        const cost = selectedTower.getUpgradeCost();
+                        upgradeCostEl.innerText = cost;
+                        if (this.data.money < cost) upgradeBtn.classList.add('disabled');
+                        else upgradeBtn.classList.remove('disabled');
+                    }
+
+                    // Update Sell Value
+                    const sellVal = Math.floor(selectedTower.investment * 0.7);
+                    document.getElementById('sell-value').innerText = `+${sellVal}`;
+
                 } else {
                     buildMenu.classList.remove('hidden-menu');
                     inspectMenu.classList.add('hidden-menu');
