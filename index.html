@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>PROTOCOL ZERO</title>
-    <!-- Yandex Games SDK -->
-    <script src="https://yandex.ru/games/sdk/v2"></script>
+    <!-- Yandex Games SDK (ZIP archive standard) -->
+    <script src="/sdk.js"></script>
     <style>
         /* === SYSTEM RESET & FONTS === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -366,7 +366,7 @@
         .glitch-text { animation: glitch 0.3s ease-in-out infinite; }
     </style>
 </head>
-<body class="in-menu">
+<body class="in-menu" oncontextmenu="return false;" ondragstart="return false;">
 
     <!-- ROTATE MESSAGE (Now shows on LANDSCAPE) -->
     <div id="rotate-message">
@@ -655,8 +655,8 @@
                     console.log('Yandex SDK initialized');
                     ysdk = _ysdk;
                     
+                    // --- AUTO DETECT LANGUAGE AT STARTUP ---
                     const savedLang = localStorage.getItem('cyberpunk_td_lang');
-                    
                     if (savedLang) {
                         currentLang = savedLang;
                     } else {
@@ -669,7 +669,10 @@
                     }
                     
                     applyTranslations();
+                    
+                    // --- REPORT READY ---
                     ysdk.features.LoadingAPI?.ready();
+                    
                 }).catch(console.error);
             } else {
                 applyTranslations();
@@ -1696,13 +1699,13 @@
                     ctx.translate(p.x, p.y);
                     ctx.scale(scale, scale);
                     if (p.effect === 'freeze') {
-                         if (!isMobile) ctx.shadowBlur = 15;
-                         ctx.rotate(Math.atan2(p.target.y - p.y, p.target.x - p.x));
-                         ctx.beginPath();
-                         ctx.moveTo(6, 0);
-                         ctx.lineTo(-4, 3);
-                         ctx.lineTo(-4, -3);
-                         ctx.fill();
+                          if (!isMobile) ctx.shadowBlur = 15;
+                          ctx.rotate(Math.atan2(p.target.y - p.y, p.target.x - p.x));
+                          ctx.beginPath();
+                          ctx.moveTo(6, 0);
+                          ctx.lineTo(-4, 3);
+                          ctx.lineTo(-4, -3);
+                          ctx.fill();
                     } else {
                         if (!isMobile) ctx.shadowBlur = 20; 
                         ctx.rotate(Math.atan2(p.target.y - p.y, p.target.x - p.x));
@@ -1960,9 +1963,7 @@
             }
 
             startGame() {
-                if (!ysdk) {
-                    initYandexSDK();
-                }
+                // SDK INIT CALL REMOVED - now in onload
                 const savedLevel = localStorage.getItem('cyberpunk_td_level');
                 if (savedLevel) {
                     this.level = parseInt(savedLevel);
@@ -2455,7 +2456,13 @@
 
         // Initialize game
         window.onload = () => {
-            applyTranslations();
+            // FIX 3: Disable Context Menu via JS
+            document.addEventListener('contextmenu', event => event.preventDefault());
+
+            // FIX 1: Initialize SDK Immediately
+            initYandexSDK();
+
+            // Initialize Game
             window.game = new Game();
         };
     </script>
